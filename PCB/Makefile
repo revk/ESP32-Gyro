@@ -4,7 +4,7 @@ placeleds: placeleds.c PCBCase/pcb.c PCBCase/pcb.h
 	gcc -IPCBCase -O -o $@ $< PCBCase/pcb.c -lpopt -lm -g
 
 leds:	placeleds
-	#./placeleds Gyro/Gyro.kicad_pcb
+	./placeleds Gyro/Gyro.kicad_pcb -x100 -y100 -d17 --diode=2 --count=16 --fill=VLED --tracks --vias=0.8 --power-vias=0.8 --zone-in=1.375 --zone-out=1.375
 
 stl:    Gyro/Gyro.stl
 
