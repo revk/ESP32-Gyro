@@ -3647,7 +3647,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "USB-C-Socket-V"
+			(property "Value" "USB-C-Socket-H"
 				(at 0.635 12.7 0)
 				(effects
 					(font
@@ -5041,7 +5041,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_1912111437_ALPSALPINE-SPEH130103_C390925.pdf"
+			(property "Datasheet" "~"
 				(at 0 0 0)
 				(effects
 					(font
@@ -5051,15 +5051,6 @@
 				)
 			)
 			(property "Description" "Single Pole Single Throw (SPST) switch"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MPN" "C390925"
 				(at 0 0 0)
 				(effects
 					(font
@@ -5190,7 +5181,7 @@
 				)
 			)
 			(property "Datasheet" "http://www.farnell.com/datasheets/1835997.pdf"
-				(at 0 0 0)
+				(at 5.08 -3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -5746,7 +5737,7 @@
 				(pin power_out line
 					(at 0 0 90)
 					(length 0)
-					(name "pwr"
+					(name "~"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -6266,6 +6257,10 @@
 		(uuid "ff1cd5f6-910b-4390-8d8c-569cabf4e2ed")
 	)
 	(no_connect
+		(at 42.545 60.96)
+		(uuid "023cd699-191e-4304-8733-8c80a9cadcd6")
+	)
+	(no_connect
 		(at 42.545 50.8)
 		(uuid "062ee808-1610-403f-b3c8-68eb3c2e35b5")
 	)
@@ -6276,6 +6271,10 @@
 	(no_connect
 		(at 73.025 68.58)
 		(uuid "130e3a6d-6fde-4afc-b028-653d244ec7f4")
+	)
+	(no_connect
+		(at 42.545 78.74)
+		(uuid "1a90a56b-6e8d-4877-ad62-f693ca5f8413")
 	)
 	(no_connect
 		(at 73.025 38.1)
@@ -6302,7 +6301,7 @@
 		(uuid "3e68262a-cc00-429e-8b51-6fa89764586f")
 	)
 	(no_connect
-		(at 73.025 83.82)
+		(at 42.545 76.2)
 		(uuid "3ec6f0f5-1266-45ec-be10-381d5bea1a81")
 	)
 	(no_connect
@@ -6310,7 +6309,7 @@
 		(uuid "510489dd-78e2-4985-95d2-ac1ecdb418d7")
 	)
 	(no_connect
-		(at 73.025 71.12)
+		(at 73.025 55.88)
 		(uuid "56ec8967-39b0-4e5d-a6d4-63de449cb648")
 	)
 	(no_connect
@@ -6334,7 +6333,7 @@
 		(uuid "6e7794f4-edc0-48f3-9d97-672531a93b47")
 	)
 	(no_connect
-		(at 42.545 43.18)
+		(at 42.545 53.34)
 		(uuid "6ec53abc-4927-44c8-9d1e-e43f9f01c72c")
 	)
 	(no_connect
@@ -6350,19 +6349,15 @@
 		(uuid "8408f2f1-401e-4821-b963-81107bb6f83f")
 	)
 	(no_connect
-		(at 73.025 60.96)
-		(uuid "8e304a18-5695-44c1-be19-3f7a003cc8e4")
-	)
-	(no_connect
 		(at 73.025 81.28)
 		(uuid "962a8fac-1a9d-4df0-9628-3f7ad76e8e77")
 	)
 	(no_connect
-		(at 42.545 53.34)
+		(at 73.025 60.96)
 		(uuid "9632c40c-6d55-495f-bd8e-efa4f4bca3cd")
 	)
 	(no_connect
-		(at 73.025 73.66)
+		(at 73.025 58.42)
 		(uuid "9a803673-309f-419d-9678-4f3971d3c522")
 	)
 	(no_connect
@@ -6370,16 +6365,16 @@
 		(uuid "ac699e2a-fe1c-44eb-8bc0-92990343c5e7")
 	)
 	(no_connect
-		(at 73.025 58.42)
-		(uuid "b1960b1b-22cb-44a6-99a5-10223270c0c4")
+		(at 42.545 38.1)
+		(uuid "b254bcd4-701e-4a92-b30f-805ce95a4c7a")
 	)
 	(no_connect
 		(at 42.545 40.64)
 		(uuid "cd011b49-46d7-4d76-895b-476d691ee807")
 	)
 	(no_connect
-		(at 73.025 55.88)
-		(uuid "d99a6752-137f-46d2-8ed4-1da00c02562f")
+		(at 134.62 182.88)
+		(uuid "d76ae2da-2aeb-4126-b880-1b42930a55b3")
 	)
 	(no_connect
 		(at 42.545 35.56)
@@ -6388,10 +6383,6 @@
 	(no_connect
 		(at 73.025 78.74)
 		(uuid "e7ee256b-63e9-4f56-b948-9a094e69cf1a")
-	)
-	(no_connect
-		(at 42.545 48.26)
-		(uuid "fe97c4db-f64b-43ae-90ef-76f3be25f152")
 	)
 	(wire
 		(pts
@@ -6522,6 +6513,16 @@
 			(type default)
 		)
 		(uuid "25baaf0d-240b-4809-8b41-a6aa8892f84a")
+	)
+	(wire
+		(pts
+			(xy 34.29 43.18) (xy 42.545 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2b998268-e8dc-4484-aade-46f6ff6f2465")
 	)
 	(wire
 		(pts
@@ -7325,16 +7326,6 @@
 	)
 	(wire
 		(pts
-			(xy 134.62 182.88) (xy 134.62 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bdd6dc27-c2d1-40d7-b036-3f1b44b5247b")
-	)
-	(wire
-		(pts
 			(xy 115.57 90.805) (xy 115.57 97.155)
 		)
 		(stroke
@@ -7675,22 +7666,22 @@
 	)
 	(global_label "CHARGING"
 		(shape input)
-		(at 42.545 76.2 180)
+		(at 73.025 83.82 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "016ef1c0-c6a0-4a89-9bfe-51102b72b7e1")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 30.7796 76.2 0)
+			(at 84.7904 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -7717,7 +7708,7 @@
 			)
 		)
 	)
-	(global_label "ADC1"
+	(global_label "ADC"
 		(shape output)
 		(at 222.885 83.82 0)
 		(effects
@@ -7733,6 +7724,28 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "VLED"
+		(shape output)
+		(at 247.65 27.94 270)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "15e10eee-eef7-4ae5-b84b-cd66e471fe0b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 247.65 34.8067 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -7755,6 +7768,26 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "ADC"
+		(shape input)
+		(at 42.545 48.26 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1e77daac-895a-4ce7-ad2a-92c4bb218da4")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 42.545 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -7838,6 +7871,28 @@
 		(uuid "239019b8-e380-4c01-a80b-15d6cb3d143c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 115.57 80.1283 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SDA"
+		(shape bidirectional)
+		(at 73.025 71.12 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "33254271-2e59-4b15-b659-2845cd737a5e")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 79.8766 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8111,28 +8166,6 @@
 			)
 		)
 	)
-	(global_label "LED"
-		(shape output)
-		(at 42.545 60.96 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "7b1c2385-c198-4b65-a95d-950e9b1ff07d")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 36.7669 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "D+"
 		(shape bidirectional)
 		(at 63.5 120.65 0)
@@ -8217,28 +8250,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "BTN"
-		(shape input)
-		(at 42.545 38.1 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "bf1b6493-dbeb-461a-9014-9ef220ed6f7a")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 36.6459 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
 				(hide yes)
 			)
 		)
@@ -8331,28 +8342,6 @@
 			)
 		)
 	)
-	(global_label "USB"
-		(shape input)
-		(at 42.545 78.74 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "d58a8389-56a4-4ee0-8b7d-eb6bfef04785")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 36.404 78.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "VBAT"
 		(shape output)
 		(at 137.795 33.655 0)
@@ -8393,6 +8382,28 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "SCL"
+		(shape output)
+		(at 73.025 73.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ff524aa1-54e9-44c6-98cf-60a73e2be272")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 78.8636 73.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 				(hide yes)
 			)
 		)
@@ -8462,12 +8473,22 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 168.275 83.82 0)
+		(property "Description" "Resistor"
+			(at 163.322 87.884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
+			(at 168.275 83.82 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -8519,7 +8540,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 180.975 71.12 0)
 			(effects
 				(font
@@ -8528,12 +8549,22 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 180.975 71.12 0)
+		(property "Description" "Resistor"
+			(at 181.102 65.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
+			(at 180.975 71.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -8594,8 +8625,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 260.985 70.485 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25905"
+			(at 260.985 70.485 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8791,8 +8831,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 260.985 73.025 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25905"
+			(at 260.985 73.025 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9329,7 +9378,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 198.12 37.465 0)
 			(effects
 				(font
@@ -9400,7 +9449,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "RevK:SOT-23-5"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-5"
 			(at 187.325 24.13 0)
 			(effects
 				(font
@@ -9419,7 +9468,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "200mA Low Dropout Voltage Regulator, Fixed Output 3.3V, SOT-23-5"
 			(at 187.325 32.385 0)
 			(effects
 				(font
@@ -9429,6 +9478,15 @@
 			)
 		)
 		(property "MPN" "C82942"
+			(at 187.325 32.385 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Rotation Offset" "90"
 			(at 187.325 32.385 0)
 			(effects
 				(font
@@ -9606,7 +9664,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 219.075 87.63 0)
 			(effects
 				(font
@@ -9932,7 +9990,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 169.545 107.95 0)
 			(effects
 				(font
@@ -10150,7 +10208,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NX6020CAKS"
+		(property "Value" "DMC3400SDW"
 			(at 164.465 73.406 0)
 			(effects
 				(font
@@ -10168,7 +10226,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/NX6020CAKS.pdf"
+		(property "Datasheet" "https://lcsc.com/datasheet/lcsc_datasheet_2412251007_Diodes-Incorporated-DMC3400SDW-7_C155499.pdf"
 			(at 174.625 94.615 0)
 			(effects
 				(font
@@ -10183,6 +10241,16 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C155499"
+			(at 175.895 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -10207,6 +10275,72 @@
 			(project "Gyro"
 				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
 					(reference "U5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 247.65 27.94 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "241a55ec-f5eb-40c9-bcdd-026895d3fd17")
+		(property "Reference" "#FLG04"
+			(at 247.65 26.035 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 247.65 23.8069 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 247.65 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 247.65 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 247.65 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "feb6a16e-106c-4edc-a5cb-eab8143abcc6")
+		)
+		(instances
+			(project "Gyro"
+				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
+					(reference "#FLG04")
 					(unit 1)
 				)
 			)
@@ -10867,7 +11001,7 @@
 		(dnp no)
 		(uuid "3742f52b-d3f6-4ffb-81e4-1e5112c01053")
 		(property "Reference" "R11"
-			(at 76.835 51.435 90)
+			(at 76.708 55.626 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10902,6 +11036,15 @@
 		)
 		(property "Description" "Resistor"
 			(at 76.835 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
+			(at 76.835 53.34 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10970,7 +11113,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "ESP32S3"
 			(at 57.785 62.23 0)
 			(effects
 				(font
@@ -11260,7 +11403,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "USB 2.0-only Type-C Receptacle connector"
 			(at 241.935 80.645 0)
 			(effects
 				(font
@@ -11381,7 +11524,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Schottky diode"
 			(at 172.72 37.465 0)
 			(effects
 				(font
@@ -11671,8 +11814,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 118.745 41.275 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
+			(at 118.745 41.275 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11888,7 +12040,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Special symbol for telling ERC where power comes from"
 			(at 173.355 29.845 0)
 			(effects
 				(font
@@ -11917,16 +12069,15 @@
 	)
 	(symbol
 		(lib_id "Switch:SW_SPST")
-		(at 88.9 67.945 0)
+		(at 29.21 43.18 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "4e01899d-9ead-4f67-93f5-d5b00229c115")
 		(property "Reference" "SW2"
-			(at 88.9 62.1495 0)
+			(at 29.21 41.148 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11934,7 +12085,7 @@
 			)
 		)
 		(property "Value" "SW_SPST"
-			(at 88.9 64.5738 0)
+			(at 29.21 46.5512 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11942,7 +12093,7 @@
 			)
 		)
 		(property "Footprint" "Button_Switch_SMD:SW_Push_1TS009xxxx-xxxx-xxxx_6x6x5mm"
-			(at 88.9 67.945 0)
+			(at 29.21 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11950,8 +12101,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_1912111437_ALPSALPINE-SPEH130103_C390925.pdf"
-			(at 88.9 67.945 0)
+		(property "Datasheet" "~"
+			(at 29.21 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11960,7 +12111,7 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
-			(at 88.9 67.945 0)
+			(at 29.21 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11969,7 +12120,7 @@
 			)
 		)
 		(property "MPN" "C390925"
-			(at 88.9 67.945 0)
+			(at 29.21 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12269,7 +12420,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 193.675 137.16 0)
 			(effects
 				(font
@@ -12657,8 +12808,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 86.36 85.725 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
+			(at 86.36 85.725 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13070,7 +13230,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 59.055 142.24 0)
 			(effects
 				(font
@@ -13539,7 +13699,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Battery charger"
 			(at 128.27 35.56 0)
 			(effects
 				(font
@@ -13790,7 +13950,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 182.245 107.95 0)
 			(effects
 				(font
@@ -13958,7 +14118,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Special symbol for telling ERC where power comes from"
 			(at 259.08 27.94 0)
 			(effects
 				(font
@@ -14488,7 +14648,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 52.705 142.24 0)
 			(effects
 				(font
@@ -14633,7 +14793,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "NX6020CAKS"
+		(property "Value" "DMC3400SDW"
 			(at 193.167 76.073 0)
 			(effects
 				(font
@@ -14651,7 +14811,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://assets.nexperia.com/documents/data-sheet/NX6020CAKS.pdf"
+		(property "Datasheet" "https://lcsc.com/datasheet/lcsc_datasheet_2412251007_Diodes-Incorporated-DMC3400SDW-7_C155499.pdf"
 			(at 189.23 60.325 0)
 			(effects
 				(font
@@ -14666,6 +14826,16 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C155499"
+			(at 190.5 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "3"
@@ -14786,80 +14956,11 @@
 		)
 	)
 	(symbol
-		(lib_id "RevK:VCUT")
-		(at 276.225 173.99 90)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a54ead79-441c-42fa-b29e-187459ff5f36")
-		(property "Reference" "V3"
-			(at 274.955 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "~"
-			(at 276.225 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "RevK:VCUT70N"
-			(at 277.495 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 276.225 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 276.225 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(instances
-			(project "EPDBat"
-				(path "/46c350bb-7de4-4e81-aafd-4af55e37aab0"
-					(reference "V3")
-					(unit 1)
-				)
-			)
-			(project "Logger"
-				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
-					(reference "V3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
 		(at 27.305 88.9 180)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -15318,7 +15419,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c4d7ded5-0ab3-4c94-8459-ced9e1c6f887")
 		(property "Reference" "#PWR028"
 			(at 178.435 111.76 0)
@@ -15330,7 +15430,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 178.435 103.8169 0)
+			(at 180.34 103.632 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15421,7 +15521,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Special symbol for telling ERC where power comes from"
 			(at 271.145 27.94 0)
 			(effects
 				(font
@@ -15647,7 +15747,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 219.075 80.01 0)
 			(effects
 				(font
@@ -15868,7 +15968,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 219.075 72.39 0)
 			(effects
 				(font
@@ -16035,7 +16135,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 197.485 130.81 0)
 			(effects
 				(font
@@ -16255,7 +16355,16 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
+			(at 163.83 41.275 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MPN" "C25744"
 			(at 163.83 41.275 0)
 			(effects
 				(font
@@ -16318,7 +16427,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "RevK:SOT-23"
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
 			(at 165.735 27.305 0)
 			(effects
 				(font
@@ -16339,7 +16448,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "-0.33A Id, -60V Vds, P-Channel MOSFET, SOT-23"
 			(at 163.83 32.385 0)
 			(effects
 				(font
@@ -16348,7 +16457,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "C5224170"
+		(property "MPN" "C8547"
 			(at 163.83 32.385 90)
 			(effects
 				(font
@@ -16432,7 +16541,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 269.875 61.595 0)
 			(effects
 				(font
@@ -16520,7 +16629,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)"
 			(at 154.305 57.785 0)
 			(effects
 				(font
@@ -16846,6 +16955,24 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "C24112"
+			(at 175.895 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Rotation Offset" "-90"
+			(at 175.895 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "23"
 			(uuid "29f46d68-c8e6-4b7a-86ac-a22b07a1d834")
 		)
@@ -16973,7 +17100,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 86.36 93.345 0)
 			(effects
 				(font
@@ -17394,6 +17521,73 @@
 			(project "Gyro"
 				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
 					(reference "#PWR036")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 24.13 43.18 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fe5096ec-eae0-47e3-b8a6-e9c89044b805")
+		(property "Reference" "#PWR019"
+			(at 17.78 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 20.955 43.18 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 24.13 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 24.13 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 24.13 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5f544f6d-ee61-4248-b2da-115a25d8178d")
+		)
+		(instances
+			(project "Gyro"
+				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
