@@ -8116,7 +8116,7 @@
 			)
 		)
 	)
-	(global_label "RGB"
+	(global_label "LED"
 		(shape input)
 		(at 111.76 86.995 90)
 		(fields_autoplaced yes)
@@ -8128,7 +8128,7 @@
 		)
 		(uuid "70af287b-3db1-40d4-af7c-811d7a9efe90")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 111.76 80.854 90)
+			(at 111.76 81.2169 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8380,7 +8380,7 @@
 			)
 		)
 	)
-	(global_label "RGB"
+	(global_label "LED"
 		(shape output)
 		(at 42.545 45.72 180)
 		(fields_autoplaced yes)
@@ -8392,7 +8392,7 @@
 		)
 		(uuid "e1c30a32-820e-4b17-aec9-5cb8b76f0ccc")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 36.404 45.72 0)
+			(at 36.7669 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
