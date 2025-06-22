@@ -549,20 +549,7 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": [
-      {
-        "netclass": "Thick",
-        "pattern": "VBUS"
-      },
-      {
-        "netclass": "Thick",
-        "pattern": "SPWR"
-      },
-      {
-        "netclass": "Thick",
-        "pattern": "VBAT"
-      }
-    ]
+    "netclass_patterns": []
   },
   "pcbnew": {
     "last_paths": {
