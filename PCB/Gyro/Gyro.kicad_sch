@@ -9050,7 +9050,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-5"
+		(property "Footprint" "RevK:SOT-23-5"
 			(at 187.325 24.13 0)
 			(effects
 				(font
@@ -16428,7 +16428,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+		(property "Footprint" "RevK:SOT-23"
 			(at 165.735 27.305 0)
 			(effects
 				(font

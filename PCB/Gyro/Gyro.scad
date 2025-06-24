@@ -1,6 +1,6 @@
 // Generated case design for Gyro/Gyro.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2025-06-22 12:00:29
+// Generated 2025-06-24 11:44:12
 // rev:	5
 // company:	Adrian Kennard Andrews & Arnold Ltd
 // comment:	www.me.uk
@@ -126,7 +126,7 @@ translate([20.200000,7.900000,1.200000])rotate([0,0,90.000000])m2(part,hole,bloc
 };
 module part_R7(part=true,hole=false,block=false)
 {
-translate([-5.840000,-4.299999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
+translate([-5.800000,-4.299999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
 };
 module part_C27(part=true,hole=false,block=false)
 {
@@ -201,7 +201,7 @@ translate([27.300000,-1.325000,1.200000])rotate([0,0,-90.000000])m8(part,hole,bl
 };
 module part_R5(part=true,hole=false,block=false)
 {
-translate([-5.840000,-7.899999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
+translate([-5.800000,-7.899999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
 };
 module part_C21(part=true,hole=false,block=false)
 {
@@ -281,7 +281,7 @@ translate([15.850000,-2.250000,1.200000])rotate([0,0,-90.000000])m2(part,hole,bl
 };
 module part_R6(part=true,hole=false,block=false)
 {
-translate([-5.840000,-6.099999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
+translate([-5.800000,-6.099999,1.200000])rotate([0,0,90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
 };
 module part_R11(part=true,hole=false,block=false)
 {
