@@ -5,24 +5,25 @@
 
 PROJECT_NAME := Gyro
 SUFFIX := $(shell components/ESP32-RevK/buildsuffix)
-export SUFFIX
+
+ifeq ($(wildcard /bin/csh),)
+$(error	Please install /bin/csh or equivalent)
+endif
 
 all:	main/settings.h
-	@echo Make: build/$(PROJECT_NAME)$(SUFFIX).bin
+	@echo Make: $(PROJECT_NAME)$(SUFFIX).bin
 	@idf.py build
 	@cp build/$(PROJECT_NAME).bin $(PROJECT_NAME)$(SUFFIX).bin
 	@cp build/bootloader/bootloader.bin $(PROJECT_NAME)$(SUFFIX)-bootloader.bin
-	@cp build/ota_data_initial.bin $(PROJECT_NAME)$(SUFFIX)-ota_data_initial.bin
-	@cp build/partition_table/partition-table.bin $(PROJECT_NAME)$(SUFFIX)-partition-table.bin
-	@echo Done: build/$(PROJECT_NAME)$(SUFFIX).bin
+	@echo Done: $(PROJECT_NAME)$(SUFFIX).bin
 
-beta:  
+beta:	
 	-git pull
 	-git submodule update --recursive
 	-git commit -a
 	@make set
-	cp ${PROJECT_NAME}*.bin release/beta
-	git commit -a -m release/beta
+	cp $(PROJECT_NAME)*.bin release/beta
+	git commit -a -m Beta
 	git push
 
 issue:	
@@ -32,16 +33,16 @@ issue:
 	git commit -a -m Release
 	git push
 
-image:
-	esptool.py -b 460800 read_flash 0 0x400000 s3.bin
-
-set:	s3
-
 main/settings.h:     components/ESP32-RevK/revk_settings main/settings.def components/ESP32-RevK/settings.def
 	components/ESP32-RevK/revk_settings $^
 
 components/ESP32-RevK/revk_settings: components/ESP32-RevK/revk_settings.c
-	make -C components/ESP32-RevK
+	make -C components/ESP32-RevK revk_settings
+
+components/ESP32-RevK/idfmon: components/ESP32-RevK/idfmon.c
+	make -C components/ESP32-RevK idfmon
+
+set:    s3
 
 s3:
 	components/ESP32-RevK/setbuildsuffix -S3-MINI-N4-R2
@@ -67,5 +68,5 @@ update:
 	-git pull
 	-git commit -a
 	git submodule update --init --recursive --remote
-	idf.py update-dependencies
 	-git commit -a -m "Library update"
+	-git push
