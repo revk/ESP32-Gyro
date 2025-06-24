@@ -1,6 +1,6 @@
 // Generated case design for Gyro/Gyro.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2025-06-24 11:44:12
+// Generated 2025-06-24 12:37:11
 // rev:	5
 // company:	Adrian Kennard Andrews & Arnold Ltd
 // comment:	www.me.uk

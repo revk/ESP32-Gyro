@@ -6108,7 +6108,7 @@
 		(uuid "ac699e2a-fe1c-44eb-8bc0-92990343c5e7")
 	)
 	(no_connect
-		(at 42.545 38.1)
+		(at 42.545 40.64)
 		(uuid "b254bcd4-701e-4a92-b30f-805ce95a4c7a")
 	)
 	(no_connect
@@ -7721,7 +7721,7 @@
 	)
 	(global_label "PWR"
 		(shape output)
-		(at 42.545 40.64 180)
+		(at 42.545 38.1 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -7731,7 +7731,7 @@
 		)
 		(uuid "4e6beb8b-b92f-4685-b1e4-b9942f087440")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 36.2226 40.64 0)
+			(at 36.2226 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
