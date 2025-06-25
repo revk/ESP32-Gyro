@@ -18,7 +18,7 @@ static const char __attribute__((unused)) TAG[] = "Gyro";
 const char *
 app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
 {
-	return NULL;
+   return NULL;
 }
 
 void
@@ -34,12 +34,20 @@ revk_web_extra (httpd_req_t * req, int page)
 }
 
 void
+i2c_task (void *p)
+{
+
+   while (1)
+   {
+      sleep (1);
+   }
+}
+
+void
 app_main ()
 {
-	revk_boot (&app_callback);
-	revk_start();
-	while(*hostname)
-	{
-		sleep(1);
-	}
+   revk_boot (&app_callback);
+   revk_start ();
+   if (scl.set && sda.set)
+      revk_task ("i2c", &i2c_task, NULL, 4);
 }
