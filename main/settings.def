@@ -1,0 +1,8 @@
+gpio	btn	4	// Button
+gpio	led	5	// LED string
+gpio	adc	6	// ADC
+gpio	adce	-40	// ADC enable
+gpio	vbus	34	// VBUS connected
+gpio	sda	41	// I2C SDA
+gpio	scl	42	// I2C SCL
+gpio	chg	47	// Charging
