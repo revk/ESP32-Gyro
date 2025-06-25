@@ -1,6 +1,18 @@
 // Gyro app
 
 #include <revk.h>
+#include "esp_sleep.h"
+#include "esp_task_wdt.h"
+#include <driver/gpio.h>
+#include <driver/i2c.h>
+#include "led_strip.h"
+#include <esp_http_server.h>
+#include "math.h"
+#include "hal/adc_types.h"
+#include "esp_adc/adc_oneshot.h"
+#include "esp_adc/adc_cali.h"
+#include "esp_adc/adc_cali_scheme.h"
+#include "halib.h"
 
 const char *
 app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
