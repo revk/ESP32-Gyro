@@ -38,7 +38,7 @@ app_main ()
 {
 	revk_boot (&app_callback);
 	revk_start();
-	while(1)
+	while(*hostname)
 	{
 		sleep(1);
 	}
