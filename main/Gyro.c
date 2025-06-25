@@ -6,7 +6,6 @@
 #include <driver/gpio.h>
 #include <driver/i2c.h>
 #include "led_strip.h"
-#include <esp_http_server.h>
 #include "math.h"
 #include "hal/adc_types.h"
 #include "esp_adc/adc_oneshot.h"
@@ -23,11 +22,13 @@ app_callback (int client, const char *prefix, const char *target, const char *su
 void
 revk_state_extra (jo_t j)
 {
+
 }
 
 void
 revk_web_extra (httpd_req_t * req, int page)
 {
+
 }
 
 void
