@@ -1,6 +1,8 @@
 // Gyro app
 
-#include <revk.h>
+static const char __attribute__((unused)) TAG[] = "Gyro";
+
+#include "revk.h"
 #include "esp_sleep.h"
 #include "esp_task_wdt.h"
 #include <driver/gpio.h>
@@ -36,4 +38,8 @@ app_main ()
 {
 	revk_boot (&app_callback);
 	revk_start();
+	while(1)
+	{
+		sleep(1);
+	}
 }
