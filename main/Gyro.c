@@ -28,12 +28,6 @@ revk_state_extra (jo_t j)
 }
 
 void
-revk_web_extra (httpd_req_t * req, int page)
-{
-
-}
-
-void
 i2c_task (void *p)
 {
 
