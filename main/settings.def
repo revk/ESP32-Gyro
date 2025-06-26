@@ -8,3 +8,4 @@ gpio	sda	41	// I2C SDA
 gpio	scl	42	// I2C SCL
 u8	addr	69	.set .hex .fix		// I2C address
 gpio	chg	47	// Charging
+s	report		// Report to host:port via UDP

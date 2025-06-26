@@ -220,10 +220,26 @@ chg_task (void *p)
 {
    revk_gpio_input (chg);
    revk_gpio_input (vbus);
+   revk_gpio_output (adce, 0);
+   if (adc.set)
+   {
+      // TODO
+   }
    while (!b.die)
    {
       // TODO
       usleep (100000);
+   }
+}
+
+void
+report_task (void *p)
+{
+   // TODO
+   while (!b.die)
+   {
+      // TODO
+      sleep (1);
    }
 }
 
@@ -241,6 +257,13 @@ app_main ()
       revk_task ("btn", &btn_task, NULL, 4);
    if (chg.set)
       revk_task ("chg", &chg_task, NULL, 4);
-   if (scl.set && sda.set)
+   if (scl.set && sda.set && addr)
       revk_task ("i2c", &i2c_task, NULL, 4);
+   if (*report)
+      revk_task ("report", &report_task, NULL, 4);
+   while (!b.die)
+   {
+      sleep (1);
+   }
+   // TODO shutdown / sleep / etc
 }
