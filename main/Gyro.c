@@ -103,9 +103,13 @@ i2c_task (void *p)
    uint8_t id = 0;
    if (i2c_read (0x75, 1, &id) || id != 0x68)
    {
-      ESP_LOGE (TAG, "I2C failed %02X", id);
-      vTaskDelete (NULL);
-      return;
+      usleep (200000);
+      if (i2c_read (0x75, 1, &id) || id != 0x68)
+      {
+         ESP_LOGE (TAG, "I2C failed %02X", id);
+         vTaskDelete (NULL);
+         return;
+      }
    }
    i2c_write (0x6B, 0x80);      // Reset
    i2c_write (0x6B, 0x08 + 5);  // No temp, clock 1
@@ -172,11 +176,11 @@ led_task (void *p)
       if (g > 0)
       {
 #define	CIRCLE	(LEDS*255)
-         double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE/2) / M_PI;
+         double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE / 2) / M_PI;
          double f = (g - (double) d.az / DATAG) / g;
-         int a1 = a - (CIRCLE/4) * f + (CIRCLE/2),
-            a2 = a + (CIRCLE/4) * f + (CIRCLE/2);
-         ESP_LOGE (TAG, "G=%f A=%f F=%f %d-%d", g, a, f, a1, a2);
+         int a1 = a - (CIRCLE / 4) * f + (CIRCLE / 2) + (CIRCLE / LEDS / 2),
+            a2 = a + (CIRCLE / 4) * f + (CIRCLE / 2) + (CIRCLE / LEDS / 2);
+         //ESP_LOGE (TAG, "G=%f A=%f F=%f %d-%d", g, a, f, a1, a2);
          uint8_t level[LEDS] = { 0 };
          while (a1 < a2)
          {
@@ -189,13 +193,13 @@ led_task (void *p)
             level[l % LEDS] += n;
             a1 += n;
          }
-         ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
+         //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
          revk_led (strip, 0, 255, revk_blinker ());
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, 0xFF0000 * level[l] * LEDS / CIRCLE + 0x44);
          led_strip_refresh (strip);
       }
-      usleep (100000);
+      usleep (50000);
    }
    vTaskDelete (NULL);
 }
