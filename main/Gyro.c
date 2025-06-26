@@ -19,6 +19,21 @@ static const char __attribute__((unused)) TAG[] = "Gyro";
 led_strip_handle_t strip = NULL;
 const uint8_t i2cport = 0;
 
+SemaphoreHandle_t mutex = NULL;
+typedef struct data_s
+{
+   int16_t ax,
+     ay,
+     az;
+   int16_t gx,
+     gy,
+     gz;
+} data_t;
+data_t data = { 0 };
+
+#define	DATAG	(2048)          // ±16g
+#define DATARPM	(16*6)          // ±2000°/s
+
 struct
 {
    uint8_t die:1;
@@ -49,7 +64,7 @@ i2c_write (uint8_t reg, uint8_t val)
    i2c_cmd_link_delete (t);
    if (e)
       ESP_LOGE (TAG, "I2C write fail %02X %02X", reg, val);
-   usleep (100000);
+   usleep (200000);
    return e;
 }
 
@@ -111,19 +126,17 @@ i2c_task (void *p)
          {
             if (!i2c_read (0x74, sizeof (buf), buf))
             {
-               int16_t ax,
-                 ay,
-                 az,
-                 gx,
-                 gy,
-                 gz;
-               ax = (buf[0] << 8) | buf[1];
-               ay = (buf[2] << 8) | buf[3];
-               az = (buf[4] << 8) | buf[5];
-               gx = (buf[6] << 8) | buf[7];
-               gy = (buf[8] << 8) | buf[9];
-               gz = (buf[10] << 8) | buf[11];
-               ESP_LOGE (TAG, "%6d %6d %6d %6d %6d %6d", ax, ay, az, gx, gy, gz);
+               data_t d;
+               d.ax = (buf[0] << 8) | buf[1];
+               d.ay = (buf[2] << 8) | buf[3];
+               d.az = (buf[4] << 8) | buf[5];
+               d.gx = (buf[6] << 8) | buf[7];
+               d.gy = (buf[8] << 8) | buf[9];
+               d.gz = (buf[10] << 8) | buf[11];
+               xSemaphoreTake (mutex, portMAX_DELAY);
+               data = d;
+               xSemaphoreGive (mutex);
+               //ESP_LOGE (TAG, "%6d %6d %6d %6d %6d %6d", d.ax, d.ay, d.az, d.gx, d.gy, d.gz);
             }
             fifo -= sizeof (buf);
          }
@@ -151,8 +164,37 @@ led_task (void *p)
    led_strip_new_rmt_device (&strip_config, &rmt_config, &strip);
    while (!b.die)
    {
-      revk_led (strip, 0, 255, revk_blinker ());
-      led_strip_refresh (strip);
+      data_t d;
+      xSemaphoreTake (mutex, portMAX_DELAY);
+      d = data;
+      xSemaphoreGive (mutex);
+      double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
+      if (g > 0)
+      {
+#define	CIRCLE	(LEDS*255)
+         double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE/2) / M_PI;
+         double f = (g - (double) d.az / DATAG) / g;
+         int a1 = a - (CIRCLE/4) * f + (CIRCLE/2),
+            a2 = a + (CIRCLE/4) * f + (CIRCLE/2);
+         ESP_LOGE (TAG, "G=%f A=%f F=%f %d-%d", g, a, f, a1, a2);
+         uint8_t level[LEDS] = { 0 };
+         while (a1 < a2)
+         {
+            int l = (a1 * LEDS / CIRCLE);
+            int n = (l + 1) * CIRCLE / LEDS - a1;
+            if (a2 < a1 + n)
+               n = a2 - a1;
+            if (!n)
+               n = 1;
+            level[l % LEDS] += n;
+            a1 += n;
+         }
+         ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
+         revk_led (strip, 0, 255, revk_blinker ());
+         for (int l = 0; l < LEDS; l++)
+            revk_led (strip, l + 1, 255, 0xFF0000 * level[l] * LEDS / CIRCLE + 0x44);
+         led_strip_refresh (strip);
+      }
       usleep (100000);
    }
    vTaskDelete (NULL);
@@ -184,9 +226,11 @@ chg_task (void *p)
 void
 app_main ()
 {
-   ESP_LOGE (TAG, "Started");
+   //ESP_LOGE (TAG, "Started");
    revk_boot (&app_callback);
    revk_start ();
+   mutex = xSemaphoreCreateMutex ();
+   xSemaphoreGive (mutex);
    if (led.set)
       revk_task ("led", &led_task, NULL, 4);
    if (btn.set)
