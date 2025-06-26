@@ -202,8 +202,10 @@ led_task (void *p)
             a1 += n;
          }
          //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
+         uint8_t b = (g > 1.99 ? 0xFF : g * 0x80);
+         uint8_t r = (g > .99 ? 0xFF : g * 0xFF);
          for (int l = 0; l < LEDS; l++)
-            revk_led (strip, l + 1, 255, 0xFF0000 * level[l] * LEDS / CIRCLE + 0x44);
+            revk_led (strip, l + 1, 255, ((r * level[l] * LEDS / CIRCLE) << 16) + b);
       }
       revk_led (strip, 0, 255, revk_blinker ());
       led_strip_refresh (strip);
@@ -254,7 +256,7 @@ report_task (void *p)
 void
 app_main ()
 {
-   //ESP_LOGE (TAG, "Started");
+   ESP_LOGE (TAG, "Started");
    revk_boot (&app_callback);
    revk_start ();
    mutex = xSemaphoreCreateMutex ();
