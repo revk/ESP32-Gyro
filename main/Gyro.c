@@ -185,10 +185,11 @@ led_task (void *p)
       {
 #define	CIRCLE	(LEDS*255)
          double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE / 2) / M_PI;
-         double f = (g - (double) d.az / DATAG) / g;
-         int a1 = a - (CIRCLE / 4) * f + (CIRCLE / 2) + (CIRCLE / LEDS / 2),
-            a2 = a + (CIRCLE / 4) * f + (CIRCLE / 2) + (CIRCLE / LEDS / 2);
-         //ESP_LOGE (TAG, "G=%f A=%f F=%f %d-%d", g, a, f, a1, a2);
+         double f = (double) d.az / DATAG / g;
+         int da = ((CIRCLE / 2) - asin (f) / M_PI * CIRCLE) / 2;
+         int a1 = a - da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2),
+            a2 = a + da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2);
+         //ESP_LOGE (TAG, "G=%f A=%f F=%f da=%d %d-%d af=%f", g, a, f, da, a1, a2, asin (f));
          uint8_t level[LEDS] = { 0 };
          while (a1 < a2)
          {
@@ -256,7 +257,7 @@ report_task (void *p)
 void
 app_main ()
 {
-   ESP_LOGE (TAG, "Started");
+   //ESP_LOGE (TAG, "Started");
    revk_boot (&app_callback);
    revk_start ();
    mutex = xSemaphoreCreateMutex ();
