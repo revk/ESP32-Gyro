@@ -168,6 +168,10 @@ led_task (void *p)
    led_strip_new_rmt_device (&strip_config, &rmt_config, &strip);
    while (!b.die)
    {
+
+      // TODO show charging/battery level - maybe when charging or button pushed
+
+      // Show level
       data_t d;
       xSemaphoreTake (mutex, portMAX_DELAY);
       d = data;
