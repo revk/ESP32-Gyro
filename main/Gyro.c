@@ -126,7 +126,8 @@ i2c_task (void *p)
       if (!i2c_read (0x72, 2, buf))
       {
          uint16_t fifo = ((buf[0] << 8) | buf[1]);
-         while (fifo)
+         //if (fifo) ESP_LOGE (TAG, "FIFO %d", fifo);
+         while (fifo >= 12)
          {
             if (!i2c_read (0x74, sizeof (buf), buf))
             {
@@ -177,7 +178,10 @@ led_task (void *p)
       d = data;
       xSemaphoreGive (mutex);
       double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
-      if (g > 0)
+      if (g == 0)
+         for (int l = 0; l < LEDS; l++)
+            revk_led (strip, l + 1, 255, 0x4400);
+      else
       {
 #define	CIRCLE	(LEDS*255)
          double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE / 2) / M_PI;
@@ -198,11 +202,11 @@ led_task (void *p)
             a1 += n;
          }
          //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
-         revk_led (strip, 0, 255, revk_blinker ());
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, 0xFF0000 * level[l] * LEDS / CIRCLE + 0x44);
-         led_strip_refresh (strip);
       }
+      revk_led (strip, 0, 255, revk_blinker ());
+      led_strip_refresh (strip);
       usleep (50000);
    }
    vTaskDelete (NULL);
