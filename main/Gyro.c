@@ -260,18 +260,12 @@ btn_task (void *p)
       uint8_t press = revk_gpio_get (btn);
       if (press)
       {
-         if (!t)
-            ESP_LOGE (TAG, "Press");
          showbat = 30;
          t++;
          if (t >= 30)
             b.die = 1;          // Power down
       } else
-      {
-         if (t)
-            ESP_LOGE (TAG, "Release");
          t = 0;
-      }
       usleep (100000);
    }
    vTaskDelete (NULL);
