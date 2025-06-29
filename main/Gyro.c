@@ -7,6 +7,7 @@ static const char __attribute__((unused)) TAG[] = "Gyro";
 #include "esp_task_wdt.h"
 #include <driver/gpio.h>
 #include <driver/i2c.h>
+#include <driver/rtc_io.h>
 #include "led_strip.h"
 #include "math.h"
 #include "hal/adc_types.h"
@@ -37,7 +38,18 @@ data_t data = { 0 };
 struct
 {
    uint8_t die:1;
+   uint8_t vbus:1;
+   uint8_t nobat:1;
+   uint8_t charging:1;
+   uint8_t batfull:1;
 } b = { 0 };
+
+uint8_t showbat = 30;
+float voltage = NAN;
+#define ADC_SCALE       3
+#define ADC_ATTEN       ADC_ATTEN_DB_12
+#define	BAT_EMPTY	3500    // mV
+#define	BAT_FULL	4200    // mV
 
 const char *
 app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
@@ -101,15 +113,10 @@ i2c_task (void *p)
    i2c_param_config (i2cport, &config);
    i2c_set_timeout (i2cport, 31);
    uint8_t id = 0;
-   if (i2c_read (0x75, 1, &id) || id != 0x68)
+   while (i2c_read (0x75, 1, &id) || id != 0x68)
    {
-      usleep (200000);
-      if (i2c_read (0x75, 1, &id) || id != 0x68)
-      {
-         ESP_LOGE (TAG, "I2C failed %02X", id);
-         vTaskDelete (NULL);
-         return;
-      }
+      ESP_LOGE (TAG, "I2C fail %02X", id);
+      sleep (1);
    }
    i2c_write (0x6B, 0x80);      // Reset
    i2c_write (0x6B, 0x08 + 5);  // No temp, clock 1
@@ -169,9 +176,36 @@ led_task (void *p)
    led_strip_new_rmt_device (&strip_config, &rmt_config, &strip);
    while (!b.die)
    {
-
-      // TODO show charging/battery level - maybe when charging or button pushed
-
+      revk_led (strip, 0, 255, revk_blinker ());
+      led_strip_refresh (strip);
+      usleep (100000);
+      if (showbat)
+      {                         // Show battery status
+         showbat--;
+         if (!isnan (voltage) && !b.batfull && !b.nobat)
+         {                      // Show battery level
+            uint8_t bat = 0;
+            if (voltage > BAT_FULL)
+               bat = 100;
+            else if (voltage > BAT_EMPTY)
+               bat = (voltage - BAT_EMPTY) * 100 / (BAT_FULL - BAT_EMPTY);
+            //ESP_LOGE (TAG, "Bat=%d", bat);
+            bat = (uint32_t) bat *LEDS / 100;
+            for (int l = 0; l < LEDS; l++)
+               revk_led (strip, l + 1, 255, l == bat && b.vbus ? showbat & 1 ? 0x008800 : 0x004400 : l < bat ? 0x004400 : 0x000044);
+            continue;
+         }
+         if (b.vbus && (showbat & 4))
+            for (int l = 0; l < LEDS; l++)
+               revk_led (strip, l + 1, 255, 0x000044);  // flashing as charger
+         else if (b.batfull)
+            for (int l = 0; l < LEDS; l++)
+               revk_led (strip, l + 1, 255, 0x004400);  // full
+         else
+            for (int l = 0; l < LEDS; l++)
+               revk_led (strip, l + 1, 255, 0x440000);  // no bat or other problem
+         continue;
+      }
       // Show level
       data_t d;
       xSemaphoreTake (mutex, portMAX_DELAY);
@@ -208,10 +242,10 @@ led_task (void *p)
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, ((r * level[l] * LEDS / CIRCLE) << 16) + b);
       }
-      revk_led (strip, 0, 255, revk_blinker ());
-      led_strip_refresh (strip);
-      usleep (50000);
    }
+   for (int l = 0; l <= LEDS; l++)
+      revk_led (strip, l, 255, 0);
+   led_strip_refresh (strip);
    vTaskDelete (NULL);
 }
 
@@ -219,11 +253,27 @@ void
 btn_task (void *p)
 {
    revk_gpio_input (btn);
+   uint8_t t = 0;
    while (!b.die)
    {
-      // TODO
+      uint8_t press = revk_gpio_get (btn);
+      if (press)
+      {
+         if (!t)
+            ESP_LOGE (TAG, "Press");
+         showbat = 30;
+         t++;
+         if (t >= 30)
+            b.die = 1;          // Power down
+      } else
+      {
+         if (t)
+            ESP_LOGE (TAG, "Release");
+         t = 0;
+      }
       usleep (100000);
    }
+   vTaskDelete (NULL);
 }
 
 void
@@ -232,15 +282,68 @@ chg_task (void *p)
    revk_gpio_input (chg);
    revk_gpio_input (vbus);
    revk_gpio_output (adce, 0);
+   adc_oneshot_unit_handle_t adc_handle;
+   adc_channel_t adc_channel = 0;
+   adc_cali_handle_t adc_cali_handle = NULL;
    if (adc.set)
    {
-      // TODO
+      adc_unit_t adc_unit = 0;
+      adc_oneshot_io_to_channel (adc.num, &adc_unit, &adc_channel);
+      ESP_LOGE (TAG, "ADC %d unit %d channel %d", adc.num, adc_unit, adc_channel);
+      adc_oneshot_unit_init_cfg_t init_config1 = {
+         .unit_id = adc_unit,
+         .ulp_mode = ADC_ULP_MODE_DISABLE,
+      };
+      adc_oneshot_new_unit (&init_config1, &adc_handle);
+      adc_oneshot_chan_cfg_t config = {
+         .bitwidth = ADC_BITWIDTH_DEFAULT,
+         .atten = ADC_ATTEN,
+      };
+      adc_oneshot_config_channel (adc_handle, adc_channel, &config);
+#if ADC_CALI_SCHEME_CURVE_FITTING_SUPPORTED
+      adc_cali_curve_fitting_config_t cali_config = {
+         .unit_id = adc_unit,
+         .chan = adc_channel,
+         .atten = ADC_ATTEN,
+         .bitwidth = ADC_BITWIDTH_DEFAULT,
+      };
+      adc_cali_create_scheme_curve_fitting (&cali_config, &adc_cali_handle);
+#endif
+#if ADC_CALI_SCHEME_LINE_FITTING_SUPPORTED
+      adc_cali_line_fitting_config_t cali_config = {
+         .unit_id = adc_unit,
+         .atten = ADC_ATTEN,
+         .bitwidth = ADC_BITWIDTH_DEFAULT,
+      };
+      adc_cali_create_scheme_line_fitting (&cali_config, &adc_cali_handle);
+#endif
    }
+   uint8_t charge = 0;
+   uint8_t tick = 0;
    while (!b.die)
    {
-      // TODO
+      charge = (charge << 1) | revk_gpio_get (chg);
+      b.vbus = revk_gpio_get (vbus);
+      b.nobat = ((b.vbus && charge && charge != 255) ? 1 : 0);
+      b.charging = ((b.vbus && charge == 255) ? 1 : 0);
+      b.batfull = ((b.vbus && !charge) ? 1 : 0);
+      if (adc.set && !tick)
+      {
+         tick = 10;
+         int raw = 0,
+            volt = 0;
+         revk_gpio_set (adce, 1);
+         adc_oneshot_read (adc_handle, adc_channel, &raw);
+         revk_gpio_set (adce, 0);
+         adc_cali_raw_to_voltage (adc_cali_handle, raw, &volt);
+         voltage = volt * ADC_SCALE;
+         //ESP_LOGE (TAG, "V=%lf", voltage);
+      }
+      tick--;
       usleep (100000);
    }
+   adc_oneshot_del_unit (adc_handle);
+   vTaskDelete (NULL);
 }
 
 void
@@ -252,6 +355,7 @@ report_task (void *p)
       // TODO
       sleep (1);
    }
+   vTaskDelete (NULL);
 }
 
 void
@@ -276,5 +380,28 @@ app_main ()
    {
       sleep (1);
    }
-   // TODO shutdown / sleep / etc
+   revk_pre_shutdown ();
+   // Alarm
+   if (rtc_gpio_is_valid_gpio (btn.num))
+   {                            // Deep sleep
+      ESP_LOGE (TAG, "Deep sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
+      rtc_gpio_set_direction_in_sleep (btn.num, RTC_GPIO_MODE_INPUT_ONLY);
+      REVK_ERR_CHECK (esp_sleep_enable_ext0_wakeup (btn.num, 1 - btn.invert));
+   } else
+   {                            // Light sleep
+      ESP_LOGE (TAG, "Light sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
+      gpio_wakeup_enable (btn.num, btn.invert ? GPIO_INTR_LOW_LEVEL : GPIO_INTR_HIGH_LEVEL);
+      esp_sleep_enable_gpio_wakeup ();
+   }
+   // Shutdown
+   sleep (1);                   // Allow tasks to end
+#if     CONFIG_REVK_GPIO_POWER >= 0
+   gpio_set_level (CONFIG_REVK_GPIO_POWER, 0);  // Hard power off (unless USB)
+#endif
+   // Night night
+   if (rtc_gpio_is_valid_gpio (btn.num))
+      esp_deep_sleep_start ();
+   else
+      esp_light_sleep_start ();
+   esp_restart ();
 }
