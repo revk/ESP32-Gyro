@@ -127,7 +127,7 @@ i2c_task (void *p)
    i2c_write (0x23, 0x78);      // Acc and gyro FIFO
    i2c_write (0x6A, 0x44);      // FIFO enable / reset
 
-   while (1)
+   while (!b.die)
    {
       uint8_t buf[12];
       if (!i2c_read (0x72, 2, buf))
@@ -155,6 +155,10 @@ i2c_task (void *p)
       }
       usleep (100000);
    }
+   xSemaphoreTake (mutex, portMAX_DELAY);
+   memset (&data, 0, sizeof (data));
+   xSemaphoreGive (mutex);
+   vTaskDelete (NULL);
 }
 
 void
@@ -323,7 +327,12 @@ chg_task (void *p)
    while (!b.die)
    {
       charge = (charge << 1) | revk_gpio_get (chg);
-      b.vbus = revk_gpio_get (vbus);
+      uint8_t v = revk_gpio_get (vbus);
+      if (v != b.vbus)
+      {
+         showbat = 30;
+         b.vbus = v;
+      }
       b.nobat = ((b.vbus && charge && charge != 255) ? 1 : 0);
       b.charging = ((b.vbus && charge == 255) ? 1 : 0);
       b.batfull = ((b.vbus && !charge) ? 1 : 0);
@@ -349,11 +358,41 @@ chg_task (void *p)
 void
 report_task (void *p)
 {
-   // TODO
+   if (*reportip)
+   {
+   }
    while (!b.die)
    {
-      // TODO
-      sleep (1);
+      data_t d;
+      xSemaphoreTake (mutex, portMAX_DELAY);
+      d = data;
+      xSemaphoreGive (mutex);
+      double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
+      jo_t j = jo_object_alloc ();
+      jo_string (j, "id", hostname);
+      jo_litf (j, "rpm", "%.2lf", r);
+      if (reportdebug)
+      {
+         jo_object (j, "acc");
+         jo_int (j, "x", data.ax);
+         jo_int (j, "y", data.ay);
+         jo_int (j, "z", data.az);
+         jo_close (j);
+         jo_object (j, "gyro");
+         jo_int (j, "x", data.gx);
+         jo_int (j, "y", data.gy);
+         jo_int (j, "z", data.gz);
+         jo_close (j);
+      }
+      if (*reportip)
+      {
+         // TODO
+      }
+      if (reportmqtt)
+         revk_info ("data", &j);
+      else
+         jo_free (&j);
+      sleep (reportrate);
    }
    vTaskDelete (NULL);
 }
@@ -374,12 +413,10 @@ app_main ()
       revk_task ("chg", &chg_task, NULL, 4);
    if (scl.set && sda.set && addr)
       revk_task ("i2c", &i2c_task, NULL, 4);
-   if (*report)
+   if (reportrate && (*reportip || reportmqtt))
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
-   {
       sleep (1);
-   }
    revk_pre_shutdown ();
    // Alarm
    if (rtc_gpio_is_valid_gpio (btn.num))
