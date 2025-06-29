@@ -12,4 +12,4 @@ gpio	chg	-47	// Charging
 s	report.ip		.array=2	// Report to host:port via UDP
 bit	report.mqtt	1	.live		// Report via MQTT
 bit	report.debug		.live		// Extra info in report
-u8	report.rate	1	.unit="s"	// Report rate
+u8	report.rate	1	.live .unit="s"	// Report rate

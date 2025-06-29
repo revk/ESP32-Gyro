@@ -412,6 +412,8 @@ report_task (void *p)
       jo_litf (j, "rpm", "%.2lf", r);
       if (reportdebug)
       {
+         if (!b.nobat && !isnan (voltage))
+            jo_litf (j, "V", "%.3f", voltage / 1000);
          jo_object (j, "acc");
          jo_int (j, "x", data.ax);
          jo_int (j, "y", data.ay);
