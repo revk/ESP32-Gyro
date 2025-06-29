@@ -238,7 +238,7 @@ led_task (void *p)
             a1 += n;
          }
          //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
-         uint8_t b = (g > 1.99 ? 0xFF : g * 0x80);
+         uint8_t b = (g > 3.99 ? 0xFF : g * 0x40);
          uint8_t r = (g > .99 ? 0xFF : g * 0xFF);
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, ((r * level[l] * LEDS / CIRCLE) << 16) + b);
