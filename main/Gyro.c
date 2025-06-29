@@ -60,7 +60,28 @@ app_callback (int client, const char *prefix, const char *target, const char *su
 void
 revk_state_extra (jo_t j)
 {
-
+   data_t d;
+   xSemaphoreTake (mutex, portMAX_DELAY);
+   d = data;
+   xSemaphoreGive (mutex);
+   double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
+   jo_string (j, "id", hostname);
+   jo_litf (j, "rpm", "%.2lf", r);
+   if (!b.nobat && !isnan (voltage))
+      jo_litf (j, "V", "%.3f", voltage / 1000);
+   if (reportdebug)
+   {
+      jo_object (j, "acc");
+      jo_int (j, "x", data.ax);
+      jo_int (j, "y", data.ay);
+      jo_int (j, "z", data.az);
+      jo_close (j);
+      jo_object (j, "gyro");
+      jo_int (j, "x", data.gx);
+      jo_int (j, "y", data.gy);
+      jo_int (j, "z", data.gz);
+      jo_close (j);
+   }
 }
 
 esp_err_t
@@ -402,29 +423,8 @@ report_task (void *p)
    }
    while (!b.die)
    {
-      data_t d;
-      xSemaphoreTake (mutex, portMAX_DELAY);
-      d = data;
-      xSemaphoreGive (mutex);
-      double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
       jo_t j = jo_object_alloc ();
-      jo_string (j, "id", hostname);
-      jo_litf (j, "rpm", "%.2lf", r);
-      if (reportdebug)
-      {
-         if (!b.nobat && !isnan (voltage))
-            jo_litf (j, "V", "%.3f", voltage / 1000);
-         jo_object (j, "acc");
-         jo_int (j, "x", data.ax);
-         jo_int (j, "y", data.ay);
-         jo_int (j, "z", data.az);
-         jo_close (j);
-         jo_object (j, "gyro");
-         jo_int (j, "x", data.gx);
-         jo_int (j, "y", data.gy);
-         jo_int (j, "z", data.gz);
-         jo_close (j);
-      }
+      revk_state_extra (j);
       for (int i = 0; i < IPS; i++)
          if (sock[i] >= 0)
          {
