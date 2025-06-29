@@ -9,7 +9,7 @@ gpio	scl	42	// I2C SCL
 u8	addr	69	.set .hex .fix		// I2C address
 gpio	chg	-47	// Charging
 
-s	report.ip				// Report to host:port via UDP
+s	report.ip		.array=2	// Report to host:port via UDP
 bit	report.mqtt	1	.live		// Report via MQTT
 bit	report.debug		.live		// Extra info in report
 u8	report.rate	1	.unit="s"	// Report rate

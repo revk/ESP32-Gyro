@@ -114,10 +114,7 @@ i2c_task (void *p)
    i2c_set_timeout (i2cport, 31);
    uint8_t id = 0;
    while (i2c_read (0x75, 1, &id) || id != 0x68)
-   {
-      ESP_LOGE (TAG, "I2C fail %02X", id);
       sleep (1);
-   }
    i2c_write (0x6B, 0x80);      // Reset
    i2c_write (0x6B, 0x08 + 5);  // No temp, clock 1
    i2c_write (0x19, 100 - 1);   // Sample rate divide
@@ -358,8 +355,56 @@ chg_task (void *p)
 void
 report_task (void *p)
 {
-   if (*reportip)
+#define	IPS	(sizeof(reportip)/sizeof(*reportip))
+   int sock[IPS];
+   for (int i = 0; i < IPS; i++)
    {
+      sock[i] = -1;
+      if (*reportip[i])
+      {
+         const struct addrinfo hints = {
+            .ai_family = AF_UNSPEC,
+            .ai_socktype = SOCK_DGRAM,
+         };
+         struct addrinfo *a = 0,
+            *t;
+         char *mem = strdup (reportip[i]);
+         char *ip = mem;
+         char *port = NULL;
+         if (*ip == '[')
+         {
+            ip++;
+            port = strchr (ip, ']');
+            if (port)
+            {
+               *port++ = 0;
+               if (*port == ':')
+                  port++;
+               else
+                  port = NULL;
+            }
+         } else if ((port = strrchr (ip, ':')))
+            *port++ = 0;
+         if (!port)
+            port = "5555";
+         if (!getaddrinfo (ip, port, &hints, &a) && a)
+         {
+            for (t = a; t; t = t->ai_next)
+            {
+               sock[i] = socket (t->ai_family, t->ai_socktype, t->ai_protocol);
+               if (sock[i] < 0)
+                  continue;
+               if (!connect (sock[i], t->ai_addr, t->ai_addrlen))
+                  break;
+               close (sock[i]);
+               sock[i] = -1;
+            }
+            freeaddrinfo (a);
+         }
+         if (sock[i] < 0)
+            ESP_LOGE (TAG, "Failed to resolve %s:%s", ip, port);
+         free (mem);
+      }
    }
    while (!b.die)
    {
@@ -384,17 +429,24 @@ report_task (void *p)
          jo_int (j, "z", data.gz);
          jo_close (j);
       }
-      if (*reportip)
-      {
-         // TODO
-      }
+      for (int i = 0; i < IPS; i++)
+         if (sock[i] >= 0)
+         {
+            const char *p = jo_debug (j);
+            if (send (sock[i], p, strlen (p), 0) < 0)
+               ESP_LOGE (TAG, "Send to %s fail", reportip[i]);
+         }
       if (reportmqtt)
          revk_info ("data", &j);
       else
          jo_free (&j);
       sleep (reportrate);
    }
+   for (int i = 0; i < IPS; i++)
+      if (sock[i] >= 0)
+         close (sock[i]);
    vTaskDelete (NULL);
+#undef	IPS
 }
 
 void
@@ -413,7 +465,7 @@ app_main ()
       revk_task ("chg", &chg_task, NULL, 4);
    if (scl.set && sda.set && addr)
       revk_task ("i2c", &i2c_task, NULL, 4);
-   if (reportrate && (*reportip || reportmqtt))
+   if (reportrate)
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
       sleep (1);
