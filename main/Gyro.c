@@ -64,7 +64,7 @@ revk_state_extra (jo_t j)
    d = data;
    xSemaphoreGive (mutex);
    double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
-      double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
+   double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
    jo_string (j, "id", hostname);
    jo_litf (j, "rpm", "%.2lf", r);
    jo_litf (j, "G", "%.3lf", g);
@@ -237,7 +237,7 @@ led_task (void *p)
       double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
       if (g == 0)
          for (int l = 0; l < LEDS; l++)
-            revk_led (strip, l + 1, 255, 0x4400);
+            revk_led (strip, l + 1, 255, l & 1 ? 0x440000 : 0x4400);
       else
       {
 #define	CIRCLE	(LEDS*255)
@@ -276,6 +276,8 @@ void
 btn_task (void *p)
 {
    revk_gpio_input (btn);
+   while (revk_gpio_get (btn))
+      usleep (100000);          // wait release
    uint8_t t = 0;
    while (!b.die)
    {
@@ -468,6 +470,9 @@ app_main ()
    while (!b.die)
       sleep (1);
    revk_pre_shutdown ();
+   if (btn.set)
+      while (revk_gpio_get (btn))
+         usleep (100000);       // release
    // Alarm
    if (rtc_gpio_is_valid_gpio (btn.num))
    {                            // Deep sleep
