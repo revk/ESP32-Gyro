@@ -135,7 +135,7 @@ i2c_task (void *p)
    i2c_param_config (i2cport, &config);
    i2c_set_timeout (i2cport, 31);
    uint8_t id = 0;
-   while (i2c_read (0x75, 1, &id) || id != 0x68)
+   while (!b.die && (i2c_read (0x75, 1, &id) || id != 0x68))
       sleep (1);
    i2c_write (0x6B, 0x80);      // Reset
    i2c_write (0x6B, 0x08 + 5);  // No temp, clock 1
@@ -177,6 +177,7 @@ i2c_task (void *p)
    xSemaphoreTake (mutex, portMAX_DELAY);
    memset (&data, 0, sizeof (data));
    xSemaphoreGive (mutex);
+   i2c_write (0x6B, 0xC0);      // Reset/sleep
    vTaskDelete (NULL);
 }
 
