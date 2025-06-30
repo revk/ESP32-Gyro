@@ -39,7 +39,6 @@ struct
 {
    uint8_t die:1;
    uint8_t vbus:1;
-   uint8_t nobat:1;
    uint8_t charging:1;
    uint8_t batfull:1;
 } b = { 0 };
@@ -49,7 +48,7 @@ float voltage = NAN;
 #define ADC_SCALE       3
 #define ADC_ATTEN       ADC_ATTEN_DB_12
 #define	BAT_EMPTY	3500    // mV
-#define	BAT_FULL	4200    // mV
+#define	BAT_FULL	4100    // mV
 
 const char *
 app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
@@ -65,9 +64,11 @@ revk_state_extra (jo_t j)
    d = data;
    xSemaphoreGive (mutex);
    double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
+      double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
    jo_string (j, "id", hostname);
    jo_litf (j, "rpm", "%.2lf", r);
-   if (!b.nobat && !isnan (voltage))
+   jo_litf (j, "G", "%.3lf", g);
+   if (!isnan (voltage))
       jo_litf (j, "V", "%.3f", voltage / 1000);
    if (reportdebug)
    {
@@ -204,7 +205,7 @@ led_task (void *p)
       if (showbat)
       {                         // Show battery status
          showbat--;
-         if (!isnan (voltage) && !b.batfull && !b.nobat)
+         if (!isnan (voltage) && !b.batfull)
          {                      // Show battery level
             uint8_t bat = 0;
             if (voltage > BAT_FULL)
@@ -212,7 +213,7 @@ led_task (void *p)
             else if (voltage > BAT_EMPTY)
                bat = (voltage - BAT_EMPTY) * 100 / (BAT_FULL - BAT_EMPTY);
             //ESP_LOGE (TAG, "Bat=%d", bat);
-            bat = (uint32_t) bat *LEDS / 100;
+            bat = ((uint32_t) bat * LEDS + 50) / 100;
             for (int l = 0; l < LEDS; l++)
                revk_led (strip, l + 1, 255, l == bat && b.vbus ? showbat & 1 ? 0x008800 : 0x004400 : l < bat ? 0x004400 : 0x000044);
             continue;
@@ -345,10 +346,11 @@ chg_task (void *p)
          showbat = 30;
          b.vbus = v;
       }
-      b.nobat = ((b.vbus && charge && charge != 255) ? 1 : 0);
       b.charging = ((b.vbus && charge == 255) ? 1 : 0);
       b.batfull = ((b.vbus && !charge) ? 1 : 0);
-      if (adc.set && !tick)
+      if (b.vbus && charge && charge != 255)
+         voltage = NAN;         // No bat
+      else if (adc.set && (isnan (voltage) || !tick))
       {
          tick = 10;
          int raw = 0,
