@@ -47,7 +47,7 @@ uint8_t showbat = 30;
 float voltage = NAN;
 #define ADC_SCALE       3
 #define ADC_ATTEN       ADC_ATTEN_DB_12
-#define	BAT_EMPTY	3100    // mV
+#define	BAT_EMPTY	3100    // mV (as seen by ADC, in practice more like 3.2V)
 #define	BAT_FULL	4100    // mV
 
 const char *
