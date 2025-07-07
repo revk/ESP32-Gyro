@@ -277,20 +277,31 @@ void
 btn_task (void *p)
 {
    revk_gpio_input (btn);
-   while (revk_gpio_get (btn))
-      usleep (100000);          // wait release
+   if (revk_gpio_get (btn))
+   {
+      ESP_LOGE (TAG, "Wait button");
+      while (revk_gpio_get (btn))
+         usleep (100000);       // wait release
+      ESP_LOGE (TAG, "Button ready");
+   }
    uint8_t t = 0;
    while (!b.die)
    {
       uint8_t press = revk_gpio_get (btn);
       if (press)
       {
+         if (!t)
+            ESP_LOGE (TAG, "Press");
          showbat = 30;
          t++;
          if (t >= 30)
             b.die = 1;          // Power down
       } else
+      {
+         if (t)
+            ESP_LOGE (TAG, "Release");
          t = 0;
+      }
       usleep (100000);
    }
    vTaskDelete (NULL);
