@@ -290,16 +290,14 @@ btn_task (void *p)
       uint8_t press = revk_gpio_get (btn);
       if (press)
       {
-         if (!t)
-            ESP_LOGE (TAG, "Press");
+         //if (!t) ESP_LOGE (TAG, "Press");
          showbat = 30;
          t++;
          if (t >= 30)
             b.die = 1;          // Power down
       } else
       {
-         if (t)
-            ESP_LOGE (TAG, "Release");
+         //if (t) ESP_LOGE (TAG, "Release");
          t = 0;
       }
       usleep (100000);
@@ -481,6 +479,7 @@ app_main ()
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
       sleep (1);
+   ESP_LOGE (TAG, "Shutdown");
    revk_pre_shutdown ();
    if (btn.set)
       while (revk_gpio_get (btn))
@@ -498,6 +497,9 @@ app_main ()
       esp_sleep_enable_gpio_wakeup ();
    }
    // Shutdown
+#if     CONFIG_REVK_GPIO_POWER >= 0
+   ESP_LOGE (TAG, "Power off");
+#endif
    sleep (1);                   // Allow tasks to end
 #if     CONFIG_REVK_GPIO_POWER >= 0
    gpio_set_level (CONFIG_REVK_GPIO_POWER, 0);  // Hard power off (unless USB)
