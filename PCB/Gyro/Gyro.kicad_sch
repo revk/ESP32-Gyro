@@ -6292,7 +6292,7 @@
 		(uuid "d3f6ebb5-aa46-4f44-a32d-ef4ba5517090")
 	)
 	(junction
-		(at 86.36 130.175)
+		(at 85.725 142.24)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d4724916-f929-49e9-a8f7-c1fd8737e6b0")
@@ -6702,6 +6702,16 @@
 			(type default)
 		)
 		(uuid "2ed5b6c4-a396-420b-b6c8-582f5a60e5a9")
+	)
+	(wire
+		(pts
+			(xy 213.36 102.235) (xy 213.36 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "326d7116-27c7-4226-b43a-107ce827acb6")
 	)
 	(wire
 		(pts
@@ -7295,7 +7305,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 130.175) (xy 86.36 130.175)
+			(xy 89.535 142.24) (xy 85.725 142.24)
 		)
 		(stroke
 			(width 0)
@@ -7785,6 +7795,28 @@
 			)
 		)
 	)
+	(global_label "VBAT"
+		(shape input)
+		(at 213.36 102.235 90)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "0716f535-165a-4fa1-964f-3768d8883526")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 213.36 95.4892 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "VBUS"
 		(shape input)
 		(at 80.645 53.34 0)
@@ -7809,7 +7841,7 @@
 	)
 	(global_label "ADC"
 		(shape output)
-		(at 90.17 130.175 0)
+		(at 89.535 142.24 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7818,7 +7850,7 @@
 		)
 		(uuid "0c20c84b-186b-4577-b9cd-c6f773bf62ab")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 90.17 130.175 0)
+			(at 89.535 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8087,7 +8119,7 @@
 			)
 		)
 	)
-	(global_label "VBAT"
+	(global_label "VSWITCHED"
 		(shape output)
 		(at 263.525 118.745 0)
 		(fields_autoplaced yes)
@@ -8099,7 +8131,7 @@
 		)
 		(uuid "5751bb83-d4f7-40af-8c0c-f42a9b1b6d08")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 270.2708 118.745 0)
+			(at 276.1974 118.745 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8307,7 +8339,7 @@
 			)
 		)
 	)
-	(global_label "VBAT"
+	(global_label "VSWITCHED"
 		(shape input)
 		(at 158.75 29.845 180)
 		(fields_autoplaced yes)
@@ -8319,7 +8351,7 @@
 		)
 		(uuid "d0f8cee6-239e-433d-9848-1c31def4d348")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 152.0042 29.845 0)
+			(at 146.0776 29.845 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8329,9 +8361,9 @@
 			)
 		)
 	)
-	(global_label "VBAT"
+	(global_label "VSWITCHED"
 		(shape input)
-		(at 86.36 114.935 90)
+		(at 85.725 127 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8341,7 +8373,7 @@
 		)
 		(uuid "d434d553-ae40-4a9f-a960-12143503de6c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 86.36 108.1892 90)
+			(at 85.725 114.3276 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8397,7 +8429,7 @@
 	)
 	(global_label "ADCL"
 		(shape bidirectional)
-		(at 86.36 137.795 270)
+		(at 85.725 149.86 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8406,7 +8438,7 @@
 		)
 		(uuid "fa88fc72-24d3-4103-9fcf-2c90efb7b6ec")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 86.36 137.795 90)
+			(at 85.725 149.86 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9659,7 +9691,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 86.36 133.985 0)
+		(at 85.725 146.05 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9667,7 +9699,7 @@
 		(dnp no)
 		(uuid "150e8c37-0bc9-4736-b2fb-3b26abdd4946")
 		(property "Reference" "R7"
-			(at 86.36 133.985 90)
+			(at 85.725 146.05 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9675,7 +9707,7 @@
 			)
 		)
 		(property "Value" "100K 1%"
-			(at 88.9 135.89 90)
+			(at 88.265 147.955 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9683,7 +9715,7 @@
 			)
 		)
 		(property "Footprint" "RevK:R_0402"
-			(at 84.582 133.985 90)
+			(at 83.947 146.05 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9692,7 +9724,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 86.36 133.985 0)
+			(at 85.725 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9701,7 +9733,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 86.36 133.985 0)
+			(at 85.725 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9710,7 +9742,7 @@
 			)
 		)
 		(property "MPN" "C5139597"
-			(at 86.36 133.985 90)
+			(at 85.725 146.05 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13442,72 +13474,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 213.36 105.41 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "77612120-8bcc-477a-99e9-3dd5d8499543")
-		(property "Reference" "#FLG04"
-			(at 213.36 103.505 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 213.36 101.2769 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 213.36 105.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 213.36 105.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 213.36 105.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "edfb07a4-a8d0-47e2-bf16-73d9a2b22aa4")
-		)
-		(instances
-			(project "Gyro"
-				(path "/babeabf2-f3b0-4ed5-8d9e-0215947e6cf3"
-					(reference "#FLG04")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 59.055 142.24 0)
 		(unit 1)
@@ -16057,7 +16023,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 86.36 126.365 0)
+		(at 85.725 138.43 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16065,7 +16031,7 @@
 		(dnp no)
 		(uuid "cb5931eb-5b7f-460e-9a93-f31498540e01")
 		(property "Reference" "R6"
-			(at 86.36 126.365 90)
+			(at 85.725 138.43 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16073,7 +16039,7 @@
 			)
 		)
 		(property "Value" "100K 1%"
-			(at 83.82 125.73 90)
+			(at 83.185 137.795 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16081,7 +16047,7 @@
 			)
 		)
 		(property "Footprint" "RevK:R_0402"
-			(at 84.582 126.365 90)
+			(at 83.947 138.43 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16090,7 +16056,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 86.36 126.365 0)
+			(at 85.725 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16099,7 +16065,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 86.36 126.365 0)
+			(at 85.725 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16108,7 +16074,7 @@
 			)
 		)
 		(property "MPN" "C5139597"
-			(at 86.36 126.365 90)
+			(at 85.725 138.43 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16278,7 +16244,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 86.36 118.745 0)
+		(at 85.725 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16286,7 +16252,7 @@
 		(dnp no)
 		(uuid "cf5b39bc-ac06-4721-b18a-a28194fb4b9a")
 		(property "Reference" "R5"
-			(at 86.36 118.745 90)
+			(at 85.725 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16294,7 +16260,7 @@
 			)
 		)
 		(property "Value" "100K 1%"
-			(at 88.9 118.11 90)
+			(at 88.265 130.175 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16302,7 +16268,7 @@
 			)
 		)
 		(property "Footprint" "RevK:R_0402"
-			(at 84.582 118.745 90)
+			(at 83.947 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16311,7 +16277,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 86.36 118.745 0)
+			(at 85.725 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16320,7 +16286,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 86.36 118.745 0)
+			(at 85.725 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16329,7 +16295,7 @@
 			)
 		)
 		(property "MPN" "C5139597"
-			(at 86.36 118.745 90)
+			(at 85.725 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
