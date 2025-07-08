@@ -479,33 +479,57 @@ app_main ()
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
       sleep (1);
-   ESP_LOGE (TAG, "Shutdown");
    revk_pre_shutdown ();
    if (btn.set)
+   {
+      ESP_LOGE (TAG, "Wait release");
       while (revk_gpio_get (btn))
          usleep (100000);       // release
-   // Alarm
-   if (rtc_gpio_is_valid_gpio (btn.num))
-   {                            // Deep sleep
-      ESP_LOGE (TAG, "Deep sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
-      rtc_gpio_set_direction_in_sleep (btn.num, RTC_GPIO_MODE_INPUT_ONLY);
-      REVK_ERR_CHECK (esp_sleep_enable_ext0_wakeup (btn.num, 1 - btn.invert));
-   } else
-   {                            // Light sleep
-      ESP_LOGE (TAG, "Light sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
-      gpio_wakeup_enable (btn.num, btn.invert ? GPIO_INTR_LOW_LEVEL : GPIO_INTR_HIGH_LEVEL);
-      esp_sleep_enable_gpio_wakeup ();
    }
+   ESP_LOGE (TAG, "Shutdown");
    // Shutdown
-#if     CONFIG_REVK_GPIO_POWER >= 0
-   ESP_LOGE (TAG, "Power off");
-#endif
    sleep (1);                   // Allow tasks to end
 #if     CONFIG_REVK_GPIO_POWER >= 0
-   gpio_set_level (CONFIG_REVK_GPIO_POWER, 0);  // Hard power off (unless USB)
+   if (btn.set && btn.pulldown && !btn.invert)
+   {
+      ESP_LOGE (TAG, "Power off GPIO %d", btn.num);
+      gpio_set_level (btn.num, 0);
+      gpio_set_direction (btn.num, GPIO_MODE_OUTPUT_OD);
+      gpio_hold_en (btn.num);
+   }
+   ESP_LOGE (TAG, "Power off GPIO %d", CONFIG_REVK_GPIO_POWER);
+   gpio_set_direction (CONFIG_REVK_GPIO_POWER, GPIO_MODE_OUTPUT_OD);
+   gpio_set_level (CONFIG_REVK_GPIO_POWER, 0);
+   gpio_hold_en (CONFIG_REVK_GPIO_POWER);
+   sleep (1);
+   // Should be off now - if not, undo so we can deep sleep
+   gpio_hold_dis (CONFIG_REVK_GPIO_POWER);
+   if (btn.set && btn.pulldown && !btn.invert)
+   {
+      gpio_hold_dis (btn.num);
+      revk_gpio_input (btn);
+   }
 #endif
+   ESP_LOGE (TAG, "Sleep");
+   // Alarm btn from sleep
+   if (btn.set)
+   {
+      if (rtc_gpio_is_valid_gpio (btn.num))
+      {                         // Deep sleep
+         ESP_LOGE (TAG, "Deep sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
+         rtc_gpio_set_direction_in_sleep (btn.num, RTC_GPIO_MODE_INPUT_ONLY);
+         if (btn.pulldown)
+            rtc_gpio_pulldown_en (btn.num);
+         REVK_ERR_CHECK (esp_sleep_enable_ext0_wakeup (btn.num, 1 - btn.invert));
+      } else
+      {                         // Light sleep
+         ESP_LOGE (TAG, "Light sleep on btn %d %s", btn.num, btn.invert ? "low" : "high");
+         gpio_wakeup_enable (btn.num, btn.invert ? GPIO_INTR_LOW_LEVEL : GPIO_INTR_HIGH_LEVEL);
+         esp_sleep_enable_gpio_wakeup ();
+      }
+   }
    // Night night
-   if (rtc_gpio_is_valid_gpio (btn.num))
+   if (btn.set && rtc_gpio_is_valid_gpio (btn.num))
       esp_deep_sleep_start ();
    else
       esp_light_sleep_start ();
