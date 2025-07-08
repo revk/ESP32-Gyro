@@ -1,6 +1,6 @@
 // Generated case design for Gyro/Gyro.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2025-06-24 12:37:11
+// Generated 2025-07-08 09:33:53
 // rev:	5
 // company:	Adrian Kennard Andrews & Arnold Ltd
 // comment:	www.me.uk
@@ -31,7 +31,7 @@ module outline(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(po
 module pcb(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[[-30.000000,-2.500000],[-22.000000,-10.500000],[29.000000,-10.500000],[29.382684,-10.423880],[29.707107,-10.207107],[29.923880,-9.882684],[30.000000,-9.500000],[30.000000,9.500000],[29.923880,9.882684],[29.707107,10.207107],[29.382684,10.423880],[29.000000,10.500000],[-22.000000,10.500000],[-30.000000,2.500000]],paths=[[0,1,2,3,4,5,6,7,8,9,10,11,12,13]]);}
 module part_D1(part=true,hole=false,block=false)
 {
-translate([-23.425000,-5.075000,1.200000])rotate([0,0,90.000000])m0(part,hole,block,casetop); // D1 (back)
+translate([-23.000000,-6.400000,1.200000])rotate([0,0,180.000000])m0(part,hole,block,casetop); // D1 (back)
 };
 module part_C3(part=true,hole=false,block=false)
 {
@@ -39,7 +39,7 @@ translate([9.722347,7.067492,1.200000])rotate([0,0,56.250000])m1(part,hole,block
 };
 module part_R4(part=true,hole=false,block=false)
 {
-translate([-23.600000,-3.700000,1.200000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
+translate([-28.425458,-1.700990,1.200000])rotate([0,0,-90.000000])m2(part,hole,block,casetop); // RevK:R_0402 R_0402_1005Metric (back)
 };
 module part_J3(part=true,hole=false,block=false)
 {
@@ -165,7 +165,7 @@ translate([9.722347,-7.067492,1.200000])rotate([0,0,-56.250000])m1(part,hole,blo
 };
 module part_C1(part=true,hole=false,block=false)
 {
-translate([-25.000000,-5.000000,1.200000])rotate([0,0,90.000000])m1(part,hole,block,casetop); // RevK:C_0402 C_0402_1005Metric (back)
+translate([-24.300000,-6.400000,1.200000])rotate([0,0,90.000000])m1(part,hole,block,casetop); // RevK:C_0402 C_0402_1005Metric (back)
 };
 module part_C7(part=true,hole=false,block=false)
 {
@@ -186,10 +186,6 @@ translate([-2.852976,3.252809,1.200000])rotate([0,0,-67.500000])m0(part,hole,blo
 module part_C23(part=true,hole=false,block=false)
 {
 translate([18.350000,-8.000000,1.200000])rotate([0,0,180.000000])m5(part,hole,block,casetop); // RevK:C_0805 C_0805_2012Metric (back)
-};
-module part_U6(part=true,hole=false,block=false)
-{
-// Missing model U6.1 WCSP-4-0.7x0.78
 };
 module part_D3(part=true,hole=false,block=false)
 {
@@ -229,7 +225,7 @@ translate([13.336675,-1.658268,1.200000])rotate([0,0,-11.250000])m1(part,hole,bl
 };
 module part_U4(part=true,hole=false,block=false)
 {
-// Missing model U4.1 QFN-24-1EP_4x4mm_P0.5mm_EP2.6x2.6mm
+// Missing model U4.1 QFN-24-1EP_4x4mm_P0.5mm_EP2.7x2.6mm
 };
 module part_J6(part=true,hole=false,block=false)
 {
@@ -245,7 +241,7 @@ translate([13.336675,1.658268,1.200000])rotate([0,0,11.250000])m1(part,hole,bloc
 };
 module part_C20(part=true,hole=false,block=false)
 {
-translate([-22.550000,4.158664,1.200000])rotate([0,0,90.000000])m1(part,hole,block,casetop); // RevK:C_0402 C_0402_1005Metric (back)
+translate([-23.600000,5.500000,1.200000])rotate([0,0,180.000000])m1(part,hole,block,casetop); // RevK:C_0402 C_0402_1005Metric (back)
 };
 module part_C17(part=true,hole=false,block=false)
 {
@@ -267,9 +263,9 @@ module part_C10(part=true,hole=false,block=false)
 {
 translate([3.341732,-8.336675,1.200000])rotate([0,0,-101.250000])m1(part,hole,block,casetop); // RevK:C_0402 C_0402_1005Metric (back)
 };
-module part_SW2(part=true,hole=false,block=false)
+module part_SW1(part=true,hole=false,block=false)
 {
-translate([-26.000000,0.000000,1.200000])rotate([0,0,90.000000])m12(part,hole,block,casetop); // SW2 (back)
+// Missing model SW1.1 DPDT
 };
 module part_D6(part=true,hole=false,block=false)
 {
@@ -345,7 +341,6 @@ part_D10(part,hole,block);
 part_C16(part,hole,block);
 part_D15(part,hole,block);
 part_C23(part,hole,block);
-part_U6(part,hole,block);
 part_D3(part,hole,block);
 part_C28(part,hole,block);
 part_R5(part,hole,block);
@@ -365,7 +360,7 @@ part_C24(part,hole,block);
 part_Q1(part,hole,block);
 part_C12(part,hole,block);
 part_C10(part,hole,block);
-part_SW2(part,hole,block);
+part_SW1(part,hole,block);
 part_D6(part,hole,block);
 part_R2(part,hole,block);
 part_R6(part,hole,block);
@@ -376,7 +371,7 @@ part_C29(part,hole,block);
 part_C14(part,hole,block);
 }
 
-parts_top=25;
+parts_top=24;
 module part_J2(part=true,hole=false,block=false)
 {
 };
@@ -575,22 +570,6 @@ if(part)
 	b(-0.9375,-0.95,0,1.475,0.6,0.5); // Pad
 	b(-0.9375,0.95,0,1.475,0.6,0.5); // Pad
 	b(0.9375,0,0,1.475,0.6,0.5); // Pad
-}
-}
-
-module m12(part=false,hole=false,block=false,height)
-{ // SW2
-if(part)
-{
-	b(0,0,0,6,6,2);
-}
-if(hole)
-{
-	b(0,0,1,6.5,6.5,height);
-}
-if(block)
-{
-	b(0,0,7,7,height);
 }
 }
 

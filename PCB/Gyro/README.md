@@ -11,4 +11,4 @@ This is an open source project, but bear in mind you cannot sell boards bearing 
 <img src='Gyro.png' width=32%><img src='Gyro-90.png' width=32%><img src='Gyro-bottom.png' width=32%>
 <img src='Gyro-panel.png' width=49%><img src='Gyro-panel-bottom.png' width=49%>
 
-*Auto generated 2025-06-24T12:37:10*
+*Auto generated 2025-07-08T09:33:53*
