@@ -1,4 +1,4 @@
-gpio	btn	↓4	// Button
+gpio	btn	"↓4"	// Button
 gpio	led	5	// LED string
 gpio	lede		// LED enable
 gpio	adc	6	// ADC

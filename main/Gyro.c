@@ -53,6 +53,10 @@ float voltage = NAN;
 const char *
 app_callback (int client, const char *prefix, const char *target, const char *suffix, jo_t j)
 {
+   if (client || !prefix || target || strcmp (prefix, topiccommand) || !suffix)
+      return NULL;
+   if (!strcmp (suffix, "off"))
+      b.die = 1;
    return NULL;
 }
 
@@ -276,6 +280,7 @@ led_task (void *p)
 void
 btn_task (void *p)
 {
+   gpio_hold_dis (btn.num);
    revk_gpio_input (btn);
    if (revk_gpio_get (btn))
    {
@@ -462,7 +467,7 @@ report_task (void *p)
 void
 app_main ()
 {
-   //ESP_LOGE (TAG, "Started");
+   ESP_LOGE (TAG, "Started");
    revk_boot (&app_callback);
    revk_start ();
    mutex = xSemaphoreCreateMutex ();
@@ -485,6 +490,16 @@ app_main ()
       ESP_LOGE (TAG, "Wait release");
       while (revk_gpio_get (btn))
          usleep (100000);       // release
+   }
+   if (vbus.set && revk_gpio_get (vbus))
+   {
+      ESP_LOGE (TAG, "Wait USB");
+      while (revk_gpio_get (vbus))
+      {
+         if (revk_gpio_get (btn))
+            esp_restart ();
+         usleep (10000);
+      }
    }
    ESP_LOGE (TAG, "Shutdown");
    // Shutdown
