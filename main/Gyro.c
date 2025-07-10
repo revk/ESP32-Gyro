@@ -45,9 +45,9 @@ struct
 
 uint8_t showbat = 30;
 float voltage = NAN;
-#define ADC_SCALE       3
-#define ADC_ATTEN       ADC_ATTEN_DB_12
-#define	BAT_EMPTY	3100    // mV (as seen by ADC, in practice more like 3.2V)
+#define ADC_SCALE       (3)     // Resistor ratio
+#define ADC_ATTEN       ADC_ATTEN_DB_2_5
+#define	BAT_EMPTY	3100    // mV
 #define	BAT_FULL	4100    // mV
 
 const char *
@@ -315,7 +315,7 @@ chg_task (void *p)
 {
    revk_gpio_input (chg);
    revk_gpio_input (vbus);
-   revk_gpio_output (adce, 0);
+   revk_gpio_output (adce, 1); // Waste of time FFS
    adc_oneshot_unit_handle_t adc_handle;
    adc_channel_t adc_channel = 0;
    adc_cali_handle_t adc_cali_handle = NULL;
@@ -342,7 +342,7 @@ chg_task (void *p)
          .bitwidth = ADC_BITWIDTH_DEFAULT,
       };
       adc_cali_create_scheme_curve_fitting (&cali_config, &adc_cali_handle);
-#endif
+#else
 #if ADC_CALI_SCHEME_LINE_FITTING_SUPPORTED
       adc_cali_line_fitting_config_t cali_config = {
          .unit_id = adc_unit,
@@ -350,6 +350,7 @@ chg_task (void *p)
          .bitwidth = ADC_BITWIDTH_DEFAULT,
       };
       adc_cali_create_scheme_line_fitting (&cali_config, &adc_cali_handle);
+#endif
 #endif
    }
    uint8_t charge = 0;
@@ -367,20 +368,18 @@ chg_task (void *p)
       b.batfull = ((b.vbus && !charge) ? 1 : 0);
       if (b.vbus && charge && charge != 255)
          voltage = NAN;         // No bat
-      else if (adc.set && (isnan (voltage) || !tick))
+      else if (adc.set && isnan (voltage))
+         tick = 0;
+      if (adc.set && !tick)
       {
          tick = 10;
-         int raw = 0,
-            volt = 0;
-         revk_gpio_set (adce, 1);
-         adc_oneshot_read (adc_handle, adc_channel, &raw);
-         revk_gpio_set (adce, 0);
-         adc_cali_raw_to_voltage (adc_cali_handle, raw, &volt);
+         int volt = 0;
+	 adc_oneshot_get_calibrated_result(adc_handle,adc_cali_handle,adc_channel,&volt);
          voltage = volt * ADC_SCALE;
          //ESP_LOGE (TAG, "V=%lf", voltage);
       }
-      tick--;
       usleep (100000);
+      tick--;
    }
    adc_oneshot_del_unit (adc_handle);
    vTaskDelete (NULL);
