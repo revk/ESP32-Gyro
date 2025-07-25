@@ -15,6 +15,10 @@ static const char __attribute__((unused)) TAG[] = "Gyro";
 #include "esp_adc/adc_cali.h"
 #include "esp_adc/adc_cali_scheme.h"
 #include "halib.h"
+#include "nimble/nimble_port.h"
+#include "nimble/nimble_port_freertos.h"
+#include "host/ble_hs.h"
+#include "host/ble_uuid.h"
 
 #define LEDS	16
 led_strip_handle_t strip = NULL;
@@ -122,6 +126,124 @@ i2c_read (uint8_t reg, uint8_t len, uint8_t * data)
    if (e)
       ESP_LOGE (TAG, "I2C read fail %02X", reg);
    return e;
+}
+
+
+/// BLE
+#define MAX_ADV 31
+
+static void
+ble_on_sync (void)
+{
+}
+
+static void
+ble_on_reset (int reason)
+{
+}
+
+static uint8_t
+add_name (uint8_t * data, uint8_t p, uint8_t len, const char *name)
+{
+   if (!name || !*name || p + len + 2 >= MAX_ADV)
+      return p;
+   // Name
+   int8_t l = strlen (name);
+   int8_t space = MAX_ADV - p - len - 2;
+   if (l > space)
+   {                            // Shortened
+      l = space;
+      data[p++] = (l + 1);
+      data[p++] = (8);
+   } else
+   {                            // Full
+      data[p++] = (l + 1);
+      data[p++] = (9);
+   }
+   while (l--)
+      data[p++] = (*name++);
+   return p;
+}
+
+
+static void
+ble_adv (const char *name, uint8_t * data, uint8_t len)
+{
+   //ESP_LOG_BUFFER_HEX_LEVEL ("ADV", data, len, ESP_LOG_ERROR);
+   ble_gap_adv_set_data (data, len);
+   uint8_t rsp[MAX_ADV],
+     p = 0;
+   p = add_name (rsp, p, 0, name);
+   //ESP_LOG_BUFFER_HEX_LEVEL ("RSP", rsp, p, ESP_LOG_ERROR);
+   ble_gap_adv_rsp_set_data (rsp, p);
+   if (!ble_gap_adv_active ())
+   {
+      struct ble_gap_adv_params adv_params = { 0 };
+      adv_params.conn_mode = BLE_GAP_CONN_MODE_NON;
+      adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+      int e = ble_gap_adv_start (BLE_OWN_ADDR_PUBLIC, NULL, BLE_HS_FOREVER, &adv_params, NULL, NULL);
+      ESP_LOGD ("BLE", "Adv started %d", e);
+   }
+}
+
+void
+ble_send (data_t d)
+{                               // Set the advertisements
+   uint8_t data[MAX_ADV],
+     p = 0;
+   data[p++] = 2;               // Len
+   data[p++] = 1;               // Flags
+   data[p++] = 6;               // Discoverable / no BR
+   data[p++] = 0;               // Len
+   data[p++] = 0xFF;            // Manufacturer specific
+   data[p++] = 0x9C;            // A&A
+   data[p++] = 0x0E;
+   data[p++] = 'S';             // Message
+   data[p++] = '1';
+   data[p++] = d.ax;
+   data[p++] = (d.ax >> 8);
+   data[p++] = d.ay;
+   data[p++] = (d.ay >> 8);
+   data[p++] = d.az;
+   data[p++] = (d.az >> 8);
+   data[p++] = d.gx;
+   data[p++] = (d.gx >> 8);
+   data[p++] = d.gy;
+   data[p++] = (d.gy >> 8);
+   data[p++] = d.gz;
+   data[p++] = (d.gz >> 8);
+   double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
+   double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
+   int16_t v = r * 100;
+   data[p++] = v;
+   data[p++] = (v >> 8);
+   v = g * 100;
+   data[p++] = v;
+   data[p++] = (v >> 8);
+   data[3] = p - 4;             // Len
+   p = add_name (data, p, 0, hostname);
+   ble_adv (hostname, data, p);
+}
+
+void
+ble_task (void *p)
+{
+   nimble_port_run ();
+   nimble_port_freertos_deinit ();
+}
+
+void
+ble_start (void)
+{
+   REVK_ERR_CHECK (esp_wifi_set_ps (WIFI_PS_MIN_MODEM));        /* default mode, but library may have overridden, needed for BLE at same time as wifi */
+   nimble_port_init ();
+   ble_hs_cfg.sync_cb = ble_on_sync;
+   ble_hs_cfg.reset_cb = ble_on_reset;
+   ble_hs_cfg.sm_sc = 1;
+   ble_hs_cfg.sm_mitm = 0;
+   ble_hs_cfg.sm_bonding = 1;
+   ble_hs_cfg.sm_io_cap = BLE_SM_IO_CAP_NO_IO;
+   nimble_port_freertos_init (ble_task);
 }
 
 void
@@ -315,7 +437,7 @@ chg_task (void *p)
 {
    revk_gpio_input (chg);
    revk_gpio_input (vbus);
-   revk_gpio_output (adce, 1); // Waste of time FFS
+   revk_gpio_output (adce, 1);  // Waste of time FFS
    adc_oneshot_unit_handle_t adc_handle;
    adc_channel_t adc_channel = 0;
    adc_cali_handle_t adc_cali_handle = NULL;
@@ -374,7 +496,7 @@ chg_task (void *p)
       {
          tick = 10;
          int volt = 0;
-	 adc_oneshot_get_calibrated_result(adc_handle,adc_cali_handle,adc_channel,&volt);
+         adc_oneshot_get_calibrated_result (adc_handle, adc_cali_handle, adc_channel, &volt);
          voltage = volt * ADC_SCALE;
          //ESP_LOGE (TAG, "V=%lf", voltage);
       }
@@ -471,6 +593,7 @@ app_main ()
    revk_start ();
    mutex = xSemaphoreCreateMutex ();
    xSemaphoreGive (mutex);
+   ble_start ();
    if (led.set)
       revk_task ("led", &led_task, NULL, 4);
    if (btn.set)
@@ -482,7 +605,14 @@ app_main ()
    if (reportrate)
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
+   {
+      data_t d;
+      xSemaphoreTake (mutex, portMAX_DELAY);
+      d = data;
+      xSemaphoreGive (mutex);
+      ble_send (d);
       sleep (1);
+   }
    revk_pre_shutdown ();
    if (btn.set)
    {
