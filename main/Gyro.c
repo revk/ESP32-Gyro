@@ -33,6 +33,8 @@ typedef struct data_s
    int16_t gx,
      gy,
      gz;
+   double rpm;
+   double g;
 } data_t;
 data_t data = { 0 };
 
@@ -71,11 +73,9 @@ revk_state_extra (jo_t j)
    xSemaphoreTake (mutex, portMAX_DELAY);
    d = data;
    xSemaphoreGive (mutex);
-   double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
-   double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
    jo_string (j, "id", hostname);
-   jo_litf (j, "rpm", "%.2lf", r);
-   jo_litf (j, "G", "%.3lf", g);
+   jo_litf (j, "rpm", "%.2lf", d.rpm);
+   jo_litf (j, "G", "%.3lf", d.g);
    if (!isnan (voltage))
       jo_litf (j, "V", "%.3f", voltage / 1000);
    if (reportdebug)
@@ -212,12 +212,10 @@ ble_send (data_t d)
    data[p++] = (d.gy >> 8);
    data[p++] = d.gz;
    data[p++] = (d.gz >> 8);
-   double r = sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy + (double) d.gz * (double) d.gz) / DATARPM;
-   double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
-   int16_t v = r * 100;
+   int16_t v = d.rpm * 100;
    data[p++] = v;
    data[p++] = (v >> 8);
-   v = g * 100;
+   v = d.g * 100;
    data[p++] = v;
    data[p++] = (v >> 8);
    data[3] = p - 4;             // Len
@@ -249,6 +247,10 @@ ble_start (void)
 void
 i2c_task (void *p)
 {
+#define SPS	100
+   double ra[SPS] = { 0 }, rt = 0;      // RPM moving average
+   double ga[SPS] = { 0 }, gt = 0;      // G moving average
+   uint8_t pa = 0;
    i2c_driver_install (i2cport, I2C_MODE_MASTER, 0, 0, 0);
    i2c_config_t config = {
       .mode = I2C_MODE_MASTER,
@@ -265,8 +267,19 @@ i2c_task (void *p)
       sleep (1);
    i2c_write (0x6B, 0x80);      // Reset
    i2c_write (0x6B, 0x08 + 5);  // No temp, clock 1
-   i2c_write (0x19, 100 - 1);   // Sample rate divide
-   i2c_write (0x1A, 0x01);      // Filter
+   i2c_write (0x19, 1000 / SPS - 1);    // Sample rate divide
+   if (SPS >= 200)
+      i2c_write (0x1A, 0x01);   // Filter 184&188Hz
+   else if (SPS >= 100)
+      i2c_write (0x1A, 0x02);   // Filter 94&98Hz
+   else if (SPS >= 50)
+      i2c_write (0x1A, 0x04);   // Filter 44&42Hz
+   else if (SPS >= 20)
+      i2c_write (0x1A, 0x04);   // Filter 21&20Hz
+   else if (SPS >= 10)
+      i2c_write (0x1A, 0x05);   // Filter, 10Hz
+   else
+      i2c_write (0x1A, 0x06);   // Filter, 5Hz
    i2c_write (0x1B, 0x18);      // ±2000°/s
    i2c_write (0x1C, 0x18);      // ±16g
    i2c_write (0x23, 0x78);      // Acc and gyro FIFO
@@ -283,22 +296,35 @@ i2c_task (void *p)
          {
             if (!i2c_read (0x74, sizeof (buf), buf))
             {
-               data_t d;
+               data_t d = { 0 };
                d.ax = (buf[0] << 8) | buf[1];
                d.ay = (buf[2] << 8) | buf[3];
                d.az = (buf[4] << 8) | buf[5];
                d.gx = (buf[6] << 8) | buf[7];
                d.gy = (buf[8] << 8) | buf[9];
                d.gz = (buf[10] << 8) | buf[11];
+               // G moving average
+               gt -= ga[pa];
+               gt += (ga[pa] =
+                      sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG);
+               d.g = gt / SPS;
+               // RPM moving average
+               rt -= ra[pa];
+               rt += (ra[pa] =
+                      sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy +
+                            (double) d.gz * (double) d.gz) / DATARPM);
+               d.rpm = rt / SPS;
+               if (++pa == SPS)
+                  pa = 0;
                xSemaphoreTake (mutex, portMAX_DELAY);
                data = d;
                xSemaphoreGive (mutex);
-               //ESP_LOGE (TAG, "%6d %6d %6d %6d %6d %6d", d.ax, d.ay, d.az, d.gx, d.gy, d.gz);
+               //ESP_LOGE (TAG, "%6d %6d %6d %6d %6d %6d %f %f", d.ax, d.ay, d.az, d.gx, d.gy, d.gz, d.rpm, d.g);
             }
             fifo -= sizeof (buf);
          }
       }
-      usleep (100000);
+      usleep (10000);
    }
    xSemaphoreTake (mutex, portMAX_DELAY);
    memset (&data, 0, sizeof (data));
@@ -361,15 +387,14 @@ led_task (void *p)
       xSemaphoreTake (mutex, portMAX_DELAY);
       d = data;
       xSemaphoreGive (mutex);
-      double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;
-      if (g == 0)
+      if (d.g == 0)
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, l & 1 ? 0x440000 : 0x4400);
       else
       {
 #define	CIRCLE	(LEDS*255)
          double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE / 2) / M_PI;
-         double f = (double) d.az / DATAG / g;
+         double f = (double) d.az / DATAG / d.g;
          int da = ((CIRCLE / 2) - asin (f) / M_PI * CIRCLE) / 2;
          int a1 = a - da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2),
             a2 = a + da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2);
@@ -387,8 +412,8 @@ led_task (void *p)
             a1 += n;
          }
          //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
-         uint8_t b = (g > 3.99 ? 0xFF : g * 0x40);
-         uint8_t r = (g > .99 ? 0xFF : g * 0xFF);
+         uint8_t b = (d.g > 3.99 ? 0xFF : d.g * 0x40);
+         uint8_t r = (d.g > .99 ? 0xFF : d.g * 0xFF);
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, ((r * level[l] * LEDS / CIRCLE) << 16) + b);
       }
@@ -576,7 +601,10 @@ report_task (void *p)
          revk_info ("data", &j);
       else
          jo_free (&j);
-      sleep (reportrate);
+      if (!reportrate)
+         usleep (100000);
+      else
+         sleep (reportrate);
    }
    for (int i = 0; i < IPS; i++)
       if (sock[i] >= 0)
@@ -601,7 +629,7 @@ app_main ()
    if (chg.set)
       revk_task ("chg", &chg_task, NULL, 4);
    if (scl.set && sda.set && addr)
-      revk_task ("i2c", &i2c_task, NULL, 4);
+      revk_task ("i2c", &i2c_task, NULL, 10);
    if (reportrate)
       revk_task ("report", &report_task, NULL, 4);
    while (!b.die)
