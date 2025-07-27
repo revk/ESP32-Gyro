@@ -248,8 +248,9 @@ void
 i2c_task (void *p)
 {
 #define SPS	100
-   double ra[SPS] = { 0 }, rt = 0;      // RPM moving average
-   double ga[SPS] = { 0 }, gt = 0;      // G moving average
+   // Not floats so as to avoid accumating errors
+   unsigned long ra[SPS] = { 0 }, rt = 0;       // RPM moving average
+   unsigned long ga[SPS] = { 0 }, gt = 0;       // G moving average
    uint8_t pa = 0;
    i2c_driver_install (i2cport, I2C_MODE_MASTER, 0, 0, 0);
    i2c_config_t config = {
@@ -306,14 +307,15 @@ i2c_task (void *p)
                // G moving average
                gt -= ga[pa];
                gt += (ga[pa] =
-                      sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG);
-               d.g = gt / SPS;
+                      1000 * sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay +
+                                   (double) d.az * (double) d.az) / DATAG);
+               d.g = (double) gt / SPS / 1000;
                // RPM moving average
                rt -= ra[pa];
                rt += (ra[pa] =
-                      sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy +
-                            (double) d.gz * (double) d.gz) / DATARPM);
-               d.rpm = rt / SPS;
+                      1000 * sqrt ((double) d.gx * (double) d.gx + (double) d.gy * (double) d.gy +
+                                   (double) d.gz * (double) d.gz) / DATARPM);
+               d.rpm = (double) rt / SPS / 1000;
                if (++pa == SPS)
                   pa = 0;
                xSemaphoreTake (mutex, portMAX_DELAY);
@@ -387,14 +389,15 @@ led_task (void *p)
       xSemaphoreTake (mutex, portMAX_DELAY);
       d = data;
       xSemaphoreGive (mutex);
-      if (d.g == 0)
+      double g = sqrt ((double) d.ax * (double) d.ax + (double) d.ay * (double) d.ay + (double) d.az * (double) d.az) / DATAG;  // Instant, not moving average
+      if (g == 0)
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, l & 1 ? 0x440000 : 0x4400);
       else
       {
 #define	CIRCLE	(LEDS*255)
          double a = atan2 ((double) d.ax / DATAG, (double) d.ay / DATAG) * (CIRCLE / 2) / M_PI;
-         double f = (double) d.az / DATAG / d.g;
+         double f = (double) d.az / DATAG / g;
          int da = ((CIRCLE / 2) - asin (f) / M_PI * CIRCLE) / 2;
          int a1 = a - da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2),
             a2 = a + da + CIRCLE + (CIRCLE / 2) + (CIRCLE / LEDS / 2);
@@ -412,8 +415,8 @@ led_task (void *p)
             a1 += n;
          }
          //ESP_LOG_BUFFER_HEX_LEVEL (TAG, level, sizeof (level), ESP_LOG_ERROR);
-         uint8_t b = (d.g > 3.99 ? 0xFF : d.g * 0x40);
-         uint8_t r = (d.g > .99 ? 0xFF : d.g * 0xFF);
+         uint8_t b = (g > 3.99 ? 0xFF : g * 0x40);
+         uint8_t r = (g > .99 ? 0xFF : g * 0xFF);
          for (int l = 0; l < LEDS; l++)
             revk_led (strip, l + 1, 255, ((r * level[l] * LEDS / CIRCLE) << 16) + b);
       }
@@ -616,7 +619,7 @@ report_task (void *p)
 void
 app_main ()
 {
-   ESP_LOGE (TAG, "Started");
+   //ESP_LOGE (TAG, "Started");
    revk_boot (&app_callback);
    revk_start ();
    mutex = xSemaphoreCreateMutex ();
