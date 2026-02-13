@@ -52,7 +52,7 @@ struct
 uint8_t showbat = 30;
 float voltage = NAN;
 #define ADC_SCALE       (3)     // Resistor ratio
-#define ADC_ATTEN       ADC_ATTEN_DB_2_5
+#define ADC_ATTEN       ADC_ATTEN_DB_6
 #define	BAT_EMPTY	3100    // mV
 #define	BAT_FULL	4100    // mV
 
